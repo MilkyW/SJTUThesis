@@ -1,0 +1,169 @@
+%%
+%% This is file `sjtuthesis-graduate.ltx',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% sjtuthesis.dtx  (with options: `graduate')
+%% 
+%% Copyright (C) 2009-2017 by weijianwen <weijianwen@gmail.com>
+%%           (C) 2018-2019 by SJTUG
+%% 
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%     https://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%% 
+\ProvidesFile{sjtuthesis-graduate.ltx}
+  [2018/01/11 1.0.0rc Shanghai Jiao Tong University Thesis Template]
+\ifsjtu@doctor
+  \def\sjtu@degree@chi{博士}
+  \def\sjtu@degree@eng{Doctor}
+\else
+  \def\sjtu@degree@chi{硕士}
+  \def\sjtu@degree@eng{Master}
+\fi
+\def\sjtu@author@chi{\sjtu@degree@chi 研究生}
+\def\sjtu@author@eng{Candidate}
+\def\sjtu@studentid@chi{学号}
+\def\sjtu@studentid@eng{Student ID}
+\def\sjtu@supervisor@chi{导师}
+\def\sjtu@supervisor@eng{Supervisor}
+\def\sjtu@assisupervisor@chi{副导师}
+\def\sjtu@assisupervisor@eng{Assistant Supervisor}
+\def\sjtu@degreeapplied@chi{申请学位}
+\def\sjtu@degreeapplied@eng{Academic Degree Applied for}
+\def\sjtu@major@chi{学科}
+\def\sjtu@major@eng{Speciality}
+\def\sjtu@department@chi{所在单位}
+\def\sjtu@department@eng{Affiliation}
+\def\sjtu@defenddate@chi{答辩日期}
+\def\sjtu@defenddate@eng{Date of Defence}
+\def\sjtu@conferring@chi{授予学位单位}
+\def\sjtu@conferring@eng{Degree-Conferring-Institution}
+\def\sjtu@subtitle@chi{%
+  \sjtu@school@chi\sjtu@degree@chi 学位论文
+}
+\def\sjtu@subtitle@eng{%
+  Dissertation Submitted to \sjtu@school@eng \\%
+  for the Degree of \sjtu@degree@eng
+}
+\geometry{%
+  paper      = a4paper,
+  top        = 3.5cm,
+  bottom     = 4.0cm,
+  left       = 3.3cm,
+  right      = 2.8cm}
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyhead[C]{\sjtu@subtitle@chi}
+  \fancyfoot[C]{\small ---~{\bfseries\thepage}~---}
+}
+\renewcommand\frontmatter{%
+  \cleardoublepage
+  \@mainmatterfalse
+  \pagenumbering{Roman}%
+  \pagestyle{plain}%
+}
+\renewcommand\mainmatter{%
+  \cleardoublepage
+  \@mainmattertrue
+  \pagenumbering{arabic}%
+  \pagestyle{plain}%
+}
+\renewcommand{\cftchapfont}{\bfseries\heiti}
+\NewDocumentEnvironment{abstract}{}{%
+  \cleardoublepage
+  \pdfbookmark[0]{\sjtu@abstract}{abstract}
+  \chapter*{%
+    \sjtu@title \vskip 24bp
+    \sjtu@abstract@chi
+  }
+  \markboth{\sjtu@abstract@chi}{\sjtu@abstract@chi}
+  \zihao{4}
+}{%
+  \vspace{2ex}\noindent
+  {\heiti\sjtu@keywords@chi}\sjtu@keywords
+}
+\NewDocumentEnvironment{englishabstract}{}{%
+  \cleardoublepage
+  \chapter*{%
+    \MakeUppercase\sjtu@englishtitle \vskip 24bp
+    \MakeUppercase\sjtu@abstract@eng
+  }
+  \markboth{\sjtu@abstract@eng}{\sjtu@abstract@eng}
+  \zihao{4}
+}{%
+  \vspace{2ex}\noindent
+  {\bfseries\MakeUppercase\sjtu@keywords@eng}\sjtu@englishkeywords
+}
+\RenewDocumentCommand\maketitle{}{%
+  \sjtu@makechinesetitle%
+  \sjtu@makeenglishtitle%
+}
+\newcommand\sjtu@makechinesetitle{
+  \cleardoublepage
+  \thispagestyle{empty}
+  \begin{center}
+    \vspace*{36bp}
+    {\zihao{-2}\sjtu@subtitle@chi}
+    \vskip \stretch{4}
+    {\zihao{2}\heiti\sjtu@title \vskip 1bp}
+    \vskip \stretch{4}
+    {\zihao{4}
+      \def\tabcolsep{1bp}
+      \def\arraystretch{1.25}
+      \begin{tabular}
+        {>{\begin{CJKfilltwosides}[t]{6\ccwd}\heiti}r<{\end{CJKfilltwosides}}@{：}l}
+        \sjtu@author@chi           & \sjtu@author          \\
+        \sjtu@studentid@chi        & \sjtu@studentid       \\
+        \sjtu@supervisor@chi       & \sjtu@supervisor      \\
+        \ifx\sjtu@englishassisupervisor\sjtu@empty\else
+          \sjtu@assisupervisor@chi & \sjtu@assisupervisor  \\
+        \fi
+        \sjtu@degreeapplied@chi    & \sjtu@degreeapplied   \\
+        \sjtu@major@chi            & \sjtu@major           \\
+        \sjtu@department@chi       & \sjtu@department      \\
+        \sjtu@defenddate@chi       & \sjtu@date            \\
+        \sjtu@conferring@chi       & \sjtu@school@chi      \\
+      \end{tabular}}
+    \vskip \stretch{1}
+  \end{center}
+  \cleardoublepage
+}
+\newcommand\sjtu@makeenglishtitle{%
+  \cleardoublepage
+  \thispagestyle{empty}
+  \begin{center}
+    \vspace*{36bp}
+    {\zihao{-2}\sjtu@subtitle@eng}
+    \vskip \stretch{4}
+    {\zihao{2}\bfseries\MakeUppercase\sjtu@englishtitle \vskip 1bp}
+    \vskip \stretch{4}
+    {\zihao{4}
+      \def\tabcolsep{1bp}
+      \def\arraystretch{1.3}
+      \begin{tabular}
+        {>{\bfseries}l<{:~}l}
+        \sjtu@author@eng           & \sjtu@englishauthor         \\
+        \sjtu@studentid@eng        & \sjtu@studentid             \\
+        \sjtu@supervisor@eng       & \sjtu@englishsupervisor     \\
+        \ifx\sjtu@englishassisupervisor\sjtu@empty\else
+          \sjtu@assisupervisor@eng & \sjtu@englishassisupervisor \\
+        \fi
+        \sjtu@degreeapplied@eng    & \sjtu@englishdegreeapplied  \\
+        \sjtu@major@eng            & \sjtu@englishmajor          \\
+        \sjtu@department@eng       & \sjtu@englishdepartment     \\
+        \sjtu@defenddate@eng       & \sjtu@englishdate           \\
+        \sjtu@conferring@eng       & \sjtu@school@eng            \\
+      \end{tabular}}
+    \vskip \stretch{1}
+  \end{center}
+  \cleardoublepage
+}
+\endinput
+%%
+%% End of file `sjtuthesis-graduate.ltx'.
