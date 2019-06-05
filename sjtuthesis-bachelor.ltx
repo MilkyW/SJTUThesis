@@ -53,19 +53,19 @@
   \newcommand\sjtu@fancyfoot[2]{%
     \small 第~{\bfseries{#1}}~页\,共~{\bfseries{#2}}~页}
 \fi
-\fancypagestyle{front}{%
+\fancypagestyle{sjtu@front}{%
   \fancyhf{}
   \fancyhead[L]{\includegraphics{figure/sjtubanner}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.Roman}}}
 }
-\fancypagestyle{plain}{%
+\fancypagestyle{sjtu@plain}{%
   \fancyhf{}
   \fancyhead[L]{\includegraphics{figure/sjtubanner}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.arabic}}}
 }
-\fancypagestyle{biglast}{%
+\fancypagestyle{sjtu@biglast}{%
   \fancyhf{}
   \fancyhead[L]{\includegraphics{figure/sjtubanner}}
   \fancyhead[R]{\sjtu@fancyhead}
@@ -76,37 +76,53 @@
   \cleardoublepage
   \@mainmatterfalse
   \pagenumbering{Roman}%
-  \pagestyle{front}%
+  \pagestyle{sjtu@front}%
 }
 \renewcommand\mainmatter{%
   \cleardoublepage
   \@mainmattertrue
   \pagenumbering{arabic}%
-  \pagestyle{plain}%
+  \pagestyle{sjtu@plain}%
 }
 \renewcommand{\cftchapfont}{\normalfont}
-\NewDocumentEnvironment{abstract}{}{%
-  \cleardoublepage
+\NewDocumentEnvironment{abstract}{}%
+{\cleardoublepage
   \pdfbookmark[0]{\sjtu@abstract}{abstract}
   \chapter*{%
-    \sjtu@title \vskip 24bp
+    \sjtu@title \vskip 16bp
     {\zihao{4}\sjtu@abstract@chi}
   }
-  \markboth{\sjtu@abstract@chi}{\sjtu@abstract@chi}
+  \markboth{\sjtu@abstract@chi}{}
 }{%
-  \vspace{2ex}\noindent
+  \vspace{3ex}\noindent
   {\zihao{-4}\heiti\sjtu@keywords@chi}{\zihao{5}\sjtu@keywords}
 }
 \NewDocumentEnvironment{englishabstract}{}{%
   \cleardoublepage
   \chapter*{%
-    \MakeUppercase\sjtu@englishtitle \vskip 24bp
+    \MakeUppercase\sjtu@englishtitle \vskip 16bp
     {\zihao{4}\MakeUppercase\sjtu@abstract@eng}
   }
-  \markboth{\sjtu@abstract@eng}{\sjtu@abstract@eng}
+  \markboth{\sjtu@abstract@eng}{}
 }{%
-  \vspace{2ex}\noindent
+  \vspace{3ex}\noindent
   {\zihao{-4}\bfseries\sjtu@keywords@eng}{\zihao{5}\sjtu@englishkeywords}
+}
+\newcommand\sjtu@bigabstract[1]{\long\gdef\sjtu@bigabstract@body{#1}}
+\NewDocumentEnvironment{bigabstract}{}
+{\Collect@Body\sjtu@bigabstract}
+{
+  \ifsjtu@course\relax\else%
+    \ifsjtu@english\relax\else%
+      \AtEndDocument{%
+        \cleardoublepage
+        \pagenumbering{roman}
+        \pagestyle{sjtu@biglast}
+        \chapter*{\MakeUppercase\sjtu@englishtitle}
+        \sjtu@bigabstract@body
+      }
+    \fi
+  \fi
 }
 \RenewDocumentCommand\maketitle{}{%
   \sjtu@makechinesetitle%
@@ -127,7 +143,13 @@
     \vskip \stretch{2}
     {\zihao{2}
       \begin{tabular}{r@{：}l}
-        论文题目 & {\zihao{-2}\parbox[t]{320pt}{\sjtu@title}}
+        论文题目 &
+        \begin{minipage}[t]{300pt}
+          \zihao{-2}
+          \begin{center}
+            \sjtu@uline\sjtu@title
+          \end{center}
+        \end{minipage}
       \end{tabular}}
     \vskip \stretch{1}
     {\zihao{3}

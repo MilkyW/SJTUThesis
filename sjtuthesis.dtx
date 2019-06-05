@@ -303,6 +303,11 @@ version 2005/12/01 or later.
   \def\sjtu@listfigurename{List of Figures}
   \def\sjtu@tablename{Table}
   \def\sjtu@listtablename{List of Tables}
+  \def\sjtu@nomenclature{Nomenclature}
+  \def\sjtu@ack{Acknowledgements}
+  \def\sjtu@publications{Publications}
+  \def\sjtu@patents{Patents}
+  \def\sjtu@projects{Projects}
 \else
   \def\sjtu@titlepage{扉页}
   \let\sjtu@abstract\sjtu@abstract@chi
@@ -310,6 +315,11 @@ version 2005/12/01 or later.
   \def\sjtu@listfigurename{插图索引}
   \def\sjtu@tablename{表}
   \def\sjtu@listtablename{表格索引}
+  \def\sjtu@nomenclature{主要符号对照表}
+  \def\sjtu@ack{致谢}
+  \def\sjtu@publications{攻读学位期间发表的学术论文}
+  \def\sjtu@patents{攻读学位期间申请的专利}
+  \def\sjtu@projects{攻读学位期间参与的项目}
 \fi
 %</class>
 %    \end{macrocode}
@@ -387,14 +397,14 @@ version 2005/12/01 or later.
   \newcommand\sjtu@fancyfoot[2]{%
     \small 第~{\bfseries{#1}}~页\,共~{\bfseries{#2}}~页}
 \fi
-\fancypagestyle{front}{%
+\fancypagestyle{sjtu@front}{%
   \fancyhf{}
   \fancyhead[L]{\includegraphics{figure/sjtubanner}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.Roman}}}
 }
 %</bachelor>
-\fancypagestyle{plain}{%
+\fancypagestyle{sjtu@plain}{%
   \fancyhf{}
 %<*bachelor>
   \fancyhead[L]{\includegraphics{figure/sjtubanner}}
@@ -402,13 +412,13 @@ version 2005/12/01 or later.
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.arabic}}}
 %</bachelor>
 %<*graduate>
-  \fancyhead[C]{\sjtu@subtitle@chi}
+  \fancyhead[C]{\zihao{-5}\sjtu@subtitle@chi}
   \fancyfoot[C]{\small ---~{\bfseries\thepage}~---}
 %</graduate>
 }
 %</(bachelor|graduate)>
 %<*bachelor>
-\fancypagestyle{biglast}{%
+\fancypagestyle{sjtu@biglast}{%
   \fancyhf{}
   \fancyhead[L]{\includegraphics{figure/sjtubanner}}
   \fancyhead[R]{\sjtu@fancyhead}
@@ -429,10 +439,10 @@ version 2005/12/01 or later.
   \pagenumbering{Roman}%
 %</(bachelor|graduate)>
 %<*bachelor>
-  \pagestyle{front}%
+  \pagestyle{sjtu@front}%
 %</bachelor>
 %<*graduate>
-  \pagestyle{plain}%
+  \pagestyle{sjtu@plain}%
 %</graduate>
 %<*(bachelor|graduate)>
 }
@@ -440,7 +450,7 @@ version 2005/12/01 or later.
   \cleardoublepage
   \@mainmattertrue
   \pagenumbering{arabic}%
-  \pagestyle{plain}%
+  \pagestyle{sjtu@plain}%
 }
 %</(bachelor|graduate)>
 %    \end{macrocode}
@@ -463,6 +473,128 @@ version 2005/12/01 or later.
 %<*graduate>
 \renewcommand{\cftchapfont}{\bfseries\heiti}
 %</graduate>
+%    \end{macrocode}
+%
+% 插入 pdf 支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage{environ}
+%</class>
+%    \end{macrocode}
+%
+% 数学支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage{mathtools}
+%</class>
+%    \end{macrocode}
+%
+% 字体支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage[defaultsups]{newtxtext}
+\RequirePackage{newtxmath}
+\RequirePackage[opentype]{sourcecodepro}
+\RequirePackage{anyfontsize}
+%</class>
+%    \end{macrocode}
+%
+% 图形支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage{graphicx}
+%</class>
+%    \end{macrocode}
+%
+% 表格支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage{array}
+\RequirePackage{multirow}
+\RequirePackage{booktabs}
+\RequirePackage{threeparttable}
+\RequirePackage{longtable}
+\appto\TPTnoteSettings{\footnotesize}
+%</class>
+%    \end{macrocode}
+%
+% 题注支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage{caption}
+\RequirePackage[list=off]{bicaption}
+\RequirePackage{subcaption}
+\DeclareCaptionFont{kaishu}{\kaishu}
+\captionsetup{%
+  format        = plain,
+  labelformat   = simple,
+  labelsep      = space,
+  justification = centering,
+  font          = {small,kaishu}}
+\DeclareCaptionOption{bi-first}[]{%
+  \def\tablename{\sjtu@tablename}
+  \def\figurename{\sjtu@figurename}}
+\DeclareCaptionOption{bi-second}[]{%
+  \def\tablename{Table}
+  \def\figurename{Figure}}
+\captionsetup[bi-first]{bi-first}
+\captionsetup[bi-second]{bi-second}
+\captionsetup[sub]{font=footnotesize}
+%</class>
+%    \end{macrocode}
+%
+% 参考文献支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage[backend=biber,style=gb7714-2015]{biblatex}
+%</class>
+%    \end{macrocode}
+%
+% enumitem 宏包 紧凑间距。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage[inline]{enumitem}
+\setlist{nosep}
+\setlist*{leftmargin=*}
+\setlist[1]{labelindent=\parindent}
+%</class>
+%    \end{macrocode}
+%
+% 脚注支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage[perpage, bottom]{footmisc}
+%</class>
+%    \end{macrocode}
+%
+% 插入 pdf 支持宏包。
+%    \begin{macrocode}
+%<*class>
+\RequirePackage{pdfpages}
+\includepdfset{fitpaper=true}
+%</class>
+%    \end{macrocode}
+%
+% 超链接
+%    \begin{macrocode}
+%<*class>
+\RequirePackage{hyperref}
+\hypersetup{
+  linktoc            = all,
+  bookmarksnumbered  = true,
+  bookmarksopen      = true,
+  bookmarksopenlevel = 1,
+  unicode            = true,
+  psdextra           = true,
+  breaklinks         = true,
+  plainpages         = false,
+  hidelinks,
+}
+\pdfstringdefDisableCommands{%
+  \let\\\@empty
+  \let\hspace\@gobble
+}
+%</class>
 %    \end{macrocode}
 %
 % ctex
@@ -495,45 +627,13 @@ version 2005/12/01 or later.
     afterskip    = {1.0ex \@plus .2ex},
   },
   paragraph/afterindent    = true,
-  subparagraph/afterindent = true,
-}
-%</class>
-%    \end{macrocode}
-%
-% 字体支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage[defaultsups]{newtxtext}
-\RequirePackage{newtxmath}
-\RequirePackage[opentype]{sourcecodepro}
-\RequirePackage{anyfontsize}
-%</class>
-%    \end{macrocode}
-%
-% 表格支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{array}
-\RequirePackage{threeparttable}
-\RequirePackage{dcolumn}
-\RequirePackage{multirow}
-\RequirePackage{booktabs}
-%</class>
-%    \end{macrocode}
-%
-% 图形支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{graphicx}
-\graphicspath{{fig/}{figure/}{figures/}{logo/}{logos/}{graph/}{graphs}}
-\DeclareGraphicsExtensions{.pdf,.eps,.png,.jpg,.jpeg}
+  subparagraph/afterindent = true,}
 %</class>
 %    \end{macrocode}
 %
 % 声明。
 %    \begin{macrocode}
 %<*class>
-\RequirePackage{pdfpages}
 \newcommand\sjtu@authorization@cont{%
   \par\hspace{8em}
   {\heiti 保　密} $\Box$，在 \uline{\hspace{2em}}
@@ -595,12 +695,67 @@ version 2005/12/01 or later.
   \fi
 }
 %</class>
+%<*class>
+\NewDocumentEnvironment{nomenclature}{m}
+{\cleardoublepage
+  \chapter{\sjtu@nomenclature}
+  \markboth{\sjtu@nomenclature}{}
+  \begin{longtable}{#1}}
+{\end{longtable}}
+\newcommand\sjtu@acknowledge[1]{\long\gdef\sjtu@acknowledge@body{#1}}
+\NewDocumentEnvironment{acknowledgements}{}
+{\Collect@Body\sjtu@acknowledge}
+{
+  \ifsjtu@review\relax\else%
+    \cleardoublepage
+    \chapter*{\sjtu@ack}
+    \markboth{\sjtu@ack}{}
+    \addcontentsline{toc}{chapter}{\sjtu@ack}
+    \sjtu@acknowledge@body
+  \fi
+}
+\NewDocumentEnvironment{sjtu@bibliolist}{o}{%
+  \list
+  {\@biblabel{\@arabic\c@enumiv}}%
+  {\settowidth\labelwidth{\@biblabel{#1}}
+    \setlength{\labelsep}{\biblabelsep}%
+    \setlength{\leftmargin}{\bibhang}%
+    \addtolength{\leftmargin}{\labelwidth}%
+    \setlength{\itemindent}{\bibitemindent}%
+    \setlength{\itemsep}{\bibitemsep}%
+    \setlength{\parsep}{\bibparsep}}%
+  \usecounter{enumiv}%
+  \let\p@enumiv\@empty
+  \renewcommand\theenumiv{\@arabic\c@enumiv}
+}%
+{\def\@noitemerr
+  {\@latex@warning{Empty `bibliolist' environment}}%
+  \endlist}
+\NewDocumentEnvironment{publications}{O{99}}
+{\cleardoublepage
+  \chapter{\sjtu@publications}
+  \markboth{\sjtu@publications}{}
+  \begin{sjtu@bibliolist}[#1]}
+{\end{sjtu@bibliolist}}
+\NewDocumentEnvironment{patents}{O{99}}
+{\cleardoublepage
+  \chapter{\sjtu@patents}
+  \markboth{\sjtu@patents}{}
+  \begin{sjtu@bibliolist}[#1]}
+{\end{sjtu@bibliolist}}
+\NewDocumentEnvironment{projects}{O{99}}
+{\cleardoublepage
+  \chapter{\sjtu@projects}
+  \markboth{\sjtu@projects}{}
+  \begin{sjtu@bibliolist}[#1]}
+{\end{sjtu@bibliolist}}
+%</class>
 %<*(bachelor|graduate)>
-\NewDocumentEnvironment{abstract}{}{%
-  \cleardoublepage
+\NewDocumentEnvironment{abstract}{}%
+{\cleardoublepage
   \pdfbookmark[0]{\sjtu@abstract}{abstract}
   \chapter*{%
-    \sjtu@title \vskip 24bp
+    \sjtu@title \vskip 16bp
 %<*bachelor>
     {\zihao{4}\sjtu@abstract@chi}
 %</bachelor>
@@ -608,12 +763,12 @@ version 2005/12/01 or later.
     \sjtu@abstract@chi
 %</graduate>
   }
-  \markboth{\sjtu@abstract@chi}{\sjtu@abstract@chi}
+  \markboth{\sjtu@abstract@chi}{}
 %<*graduate>
   \zihao{4}
 %</graduate>
 }{%
-  \vspace{2ex}\noindent
+  \vspace{3ex}\noindent
 %<*bachelor>
   {\zihao{-4}\heiti\sjtu@keywords@chi}{\zihao{5}\sjtu@keywords}
 %</bachelor>
@@ -624,7 +779,7 @@ version 2005/12/01 or later.
 \NewDocumentEnvironment{englishabstract}{}{%
   \cleardoublepage
   \chapter*{%
-    \MakeUppercase\sjtu@englishtitle \vskip 24bp
+    \MakeUppercase\sjtu@englishtitle \vskip 16bp
 %<*bachelor>
     {\zihao{4}\MakeUppercase\sjtu@abstract@eng}
 %</bachelor>
@@ -632,12 +787,12 @@ version 2005/12/01 or later.
     \MakeUppercase\sjtu@abstract@eng
 %</graduate>
   }
-  \markboth{\sjtu@abstract@eng}{\sjtu@abstract@eng}
+  \markboth{\sjtu@abstract@eng}{}
 %<*graduate>
   \zihao{4}
 %</graduate>
 }{%
-  \vspace{2ex}\noindent
+  \vspace{3ex}\noindent
 %<*bachelor>
   {\zihao{-4}\bfseries\sjtu@keywords@eng}{\zihao{5}\sjtu@englishkeywords}
 %</bachelor>
@@ -645,49 +800,73 @@ version 2005/12/01 or later.
   {\bfseries\MakeUppercase\sjtu@keywords@eng}\sjtu@englishkeywords
 %</graduate>
 }
+\newcommand\sjtu@bigabstract[1]{\long\gdef\sjtu@bigabstract@body{#1}}
+\NewDocumentEnvironment{bigabstract}{}
+{\Collect@Body\sjtu@bigabstract}
+%<*bachelor>
+{
+  \ifsjtu@course\relax\else%
+    \ifsjtu@english\relax\else%
+      \AtEndDocument{%
+        \cleardoublepage
+        \pagenumbering{roman}
+        \pagestyle{sjtu@biglast}
+        \chapter*{\MakeUppercase\sjtu@englishtitle}
+        \sjtu@bigabstract@body
+      }
+    \fi
+  \fi
+}
+%</bachelor>
+%<*graduate>
+{}
+%</graduate>
 %</(bachelor|graduate)>
 %    \end{macrocode}
 %
-% 超链接
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{hyperref}
-\hypersetup{
-  linktoc            = all,
-  bookmarksnumbered  = true,
-  bookmarksopen      = true,
-  bookmarksopenlevel = 1,
-  unicode            = true,
-  psdextra           = true,
-  breaklinks         = true,
-  plainpages         = false,
-  hidelinks,
-}
-\pdfstringdefDisableCommands{%
-  \let\\\@empty
-  \let\hspace\@gobble
-}
-%</class>
-%    \end{macrocode}
 %
 % 绘制封面
 %    \begin{macrocode}
 %<*class>
-\ifsjtu@review
-  \AtBeginDocument{
+\AtBeginDocument{
+  \ifsjtu@review
     \sjtusetup{
       author={},
       supervisor={},
       assisupervisor={},
-      cosupervisor={},
       englishauthor={},
       englishsupervisor={},
       englishassisupervisor={},
-      englishcosupervisor={},
       studentid={}
     }
-  }
-\fi
+  \fi
+  \ifsjtu@english
+    \hypersetup{
+      pdftitle    = \sjtu@englishtitle,
+      pdfauthor   = \sjtu@englishauthor,
+      pdfkeywords = \sjtu@englishkeywords,
+    }%
+  \else
+    \hypersetup{
+      pdftitle    = \sjtu@title,
+      pdfauthor   = \sjtu@author,
+      pdfkeywords = \sjtu@keywords,
+    }%
+  \fi
+}
+\newcommand{\sjtu@uline}[1]%
+{\begingroup
+  \setbox0=\vbox{\strut #1\strut}%
+  \dimen0=0pt
+  \loop\ifdim\ht0>0pt
+    \dimen1=\dimexpr\ht0 - \baselineskip\relax
+    \setbox1=\vsplit0 to \ht\strutbox
+    \advance\dimen1 by -\ht0
+    \noindent\raisebox{-\dimen0}[\ht\strutbox][\dp\strutbox]{\box1}%
+    \advance\dimen0 by \dimen1
+    \vspace{-0.2ex}\hrule\vskip 0.2ex
+  \repeat
+\endgroup}
 %</class>
 %<*(bachelor|graduate)>
 \RenewDocumentCommand\maketitle{}{%
@@ -713,7 +892,13 @@ version 2005/12/01 or later.
     \vskip \stretch{2}
     {\zihao{2}
       \begin{tabular}{r@{：}l}
-        论文题目 & {\zihao{-2}\parbox[t]{320pt}{\sjtu@title}}
+        论文题目 &
+        \begin{minipage}[t]{300pt}
+          \zihao{-2}
+          \begin{center}
+            \sjtu@uline\sjtu@title
+          \end{center}
+        \end{minipage}
       \end{tabular}}
     \vskip \stretch{1}
     {\zihao{3}

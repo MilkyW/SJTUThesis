@@ -119,6 +119,11 @@
   \def\sjtu@listfigurename{List of Figures}
   \def\sjtu@tablename{Table}
   \def\sjtu@listtablename{List of Tables}
+  \def\sjtu@nomenclature{Nomenclature}
+  \def\sjtu@ack{Acknowledgements}
+  \def\sjtu@publications{Publications}
+  \def\sjtu@patents{Patents}
+  \def\sjtu@projects{Projects}
 \else
   \def\sjtu@titlepage{扉页}
   \let\sjtu@abstract\sjtu@abstract@chi
@@ -126,6 +131,11 @@
   \def\sjtu@listfigurename{插图索引}
   \def\sjtu@tablename{表}
   \def\sjtu@listtablename{表格索引}
+  \def\sjtu@nomenclature{主要符号对照表}
+  \def\sjtu@ack{致谢}
+  \def\sjtu@publications{攻读学位期间发表的学术论文}
+  \def\sjtu@patents{攻读学位期间申请的专利}
+  \def\sjtu@projects{攻读学位期间参与的项目}
 \fi
 \RequirePackage{xparse}
 \RequirePackage{etoolbox}
@@ -156,6 +166,62 @@
 \RequirePackage[titles]{tocloft}
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{2}
+\RequirePackage{environ}
+\RequirePackage{mathtools}
+\RequirePackage[defaultsups]{newtxtext}
+\RequirePackage{newtxmath}
+\RequirePackage[opentype]{sourcecodepro}
+\RequirePackage{anyfontsize}
+\RequirePackage{graphicx}
+\RequirePackage{array}
+\RequirePackage{multirow}
+\RequirePackage{booktabs}
+\RequirePackage{threeparttable}
+\RequirePackage{longtable}
+\appto\TPTnoteSettings{\footnotesize}
+\RequirePackage{caption}
+\RequirePackage[list=off]{bicaption}
+\RequirePackage{subcaption}
+\DeclareCaptionFont{kaishu}{\kaishu}
+\captionsetup{%
+  format        = plain,
+  labelformat   = simple,
+  labelsep      = space,
+  justification = centering,
+  font          = {small,kaishu}}
+\DeclareCaptionOption{bi-first}[]{%
+  \def\tablename{\sjtu@tablename}
+  \def\figurename{\sjtu@figurename}}
+\DeclareCaptionOption{bi-second}[]{%
+  \def\tablename{Table}
+  \def\figurename{Figure}}
+\captionsetup[bi-first]{bi-first}
+\captionsetup[bi-second]{bi-second}
+\captionsetup[sub]{font=footnotesize}
+\RequirePackage[backend=biber,style=gb7714-2015]{biblatex}
+\RequirePackage[inline]{enumitem}
+\setlist{nosep}
+\setlist*{leftmargin=*}
+\setlist[1]{labelindent=\parindent}
+\RequirePackage[perpage, bottom]{footmisc}
+\RequirePackage{pdfpages}
+\includepdfset{fitpaper=true}
+\RequirePackage{hyperref}
+\hypersetup{
+  linktoc            = all,
+  bookmarksnumbered  = true,
+  bookmarksopen      = true,
+  bookmarksopenlevel = 1,
+  unicode            = true,
+  psdextra           = true,
+  breaklinks         = true,
+  plainpages         = false,
+  hidelinks,
+}
+\pdfstringdefDisableCommands{%
+  \let\\\@empty
+  \let\hspace\@gobble
+}
 \ctexset{%
   autoindent     = true,
   chapter={%
@@ -183,21 +249,7 @@
     afterskip    = {1.0ex \@plus .2ex},
   },
   paragraph/afterindent    = true,
-  subparagraph/afterindent = true,
-}
-\RequirePackage[defaultsups]{newtxtext}
-\RequirePackage{newtxmath}
-\RequirePackage[opentype]{sourcecodepro}
-\RequirePackage{anyfontsize}
-\RequirePackage{array}
-\RequirePackage{threeparttable}
-\RequirePackage{dcolumn}
-\RequirePackage{multirow}
-\RequirePackage{booktabs}
-\RequirePackage{graphicx}
-\graphicspath{{fig/}{figure/}{figures/}{logo/}{logos/}{graph/}{graphs}}
-\DeclareGraphicsExtensions{.pdf,.eps,.png,.jpg,.jpeg}
-\RequirePackage{pdfpages}
+  subparagraph/afterindent = true,}
 \newcommand\sjtu@authorization@cont{%
   \par\hspace{8em}
   {\heiti 保　密} $\Box$，在 \uline{\hspace{2em}}
@@ -258,37 +310,98 @@
     }{\includepdf[pagecommand={\thispagestyle{empty}}]{#1}}
   \fi
 }
-\RequirePackage{hyperref}
-\hypersetup{
-  linktoc            = all,
-  bookmarksnumbered  = true,
-  bookmarksopen      = true,
-  bookmarksopenlevel = 1,
-  unicode            = true,
-  psdextra           = true,
-  breaklinks         = true,
-  plainpages         = false,
-  hidelinks,
+\NewDocumentEnvironment{nomenclature}{m}
+{\cleardoublepage
+  \chapter{\sjtu@nomenclature}
+  \markboth{\sjtu@nomenclature}{}
+  \begin{longtable}{#1}}
+{\end{longtable}}
+\newcommand\sjtu@acknowledge[1]{\long\gdef\sjtu@acknowledge@body{#1}}
+\NewDocumentEnvironment{acknowledgements}{}
+{\Collect@Body\sjtu@acknowledge}
+{
+  \ifsjtu@review\relax\else%
+    \cleardoublepage
+    \chapter*{\sjtu@ack}
+    \markboth{\sjtu@ack}{}
+    \addcontentsline{toc}{chapter}{\sjtu@ack}
+    \sjtu@acknowledge@body
+  \fi
 }
-\pdfstringdefDisableCommands{%
-  \let\\\@empty
-  \let\hspace\@gobble
-}
-\ifsjtu@review
-  \AtBeginDocument{
+\NewDocumentEnvironment{sjtu@bibliolist}{o}{%
+  \list
+  {\@biblabel{\@arabic\c@enumiv}}%
+  {\settowidth\labelwidth{\@biblabel{#1}}
+    \setlength{\labelsep}{\biblabelsep}%
+    \setlength{\leftmargin}{\bibhang}%
+    \addtolength{\leftmargin}{\labelwidth}%
+    \setlength{\itemindent}{\bibitemindent}%
+    \setlength{\itemsep}{\bibitemsep}%
+    \setlength{\parsep}{\bibparsep}}%
+  \usecounter{enumiv}%
+  \let\p@enumiv\@empty
+  \renewcommand\theenumiv{\@arabic\c@enumiv}
+}%
+{\def\@noitemerr
+  {\@latex@warning{Empty `bibliolist' environment}}%
+  \endlist}
+\NewDocumentEnvironment{publications}{O{99}}
+{\cleardoublepage
+  \chapter{\sjtu@publications}
+  \markboth{\sjtu@publications}{}
+  \begin{sjtu@bibliolist}[#1]}
+{\end{sjtu@bibliolist}}
+\NewDocumentEnvironment{patents}{O{99}}
+{\cleardoublepage
+  \chapter{\sjtu@patents}
+  \markboth{\sjtu@patents}{}
+  \begin{sjtu@bibliolist}[#1]}
+{\end{sjtu@bibliolist}}
+\NewDocumentEnvironment{projects}{O{99}}
+{\cleardoublepage
+  \chapter{\sjtu@projects}
+  \markboth{\sjtu@projects}{}
+  \begin{sjtu@bibliolist}[#1]}
+{\end{sjtu@bibliolist}}
+\AtBeginDocument{
+  \ifsjtu@review
     \sjtusetup{
       author={},
       supervisor={},
       assisupervisor={},
-      cosupervisor={},
       englishauthor={},
       englishsupervisor={},
       englishassisupervisor={},
-      englishcosupervisor={},
       studentid={}
     }
-  }
-\fi
+  \fi
+  \ifsjtu@english
+    \hypersetup{
+      pdftitle    = \sjtu@englishtitle,
+      pdfauthor   = \sjtu@englishauthor,
+      pdfkeywords = \sjtu@englishkeywords,
+    }%
+  \else
+    \hypersetup{
+      pdftitle    = \sjtu@title,
+      pdfauthor   = \sjtu@author,
+      pdfkeywords = \sjtu@keywords,
+    }%
+  \fi
+}
+\newcommand{\sjtu@uline}[1]%
+{\begingroup
+  \setbox0=\vbox{\strut #1\strut}%
+  \dimen0=0pt
+  \loop\ifdim\ht0>0pt
+    \dimen1=\dimexpr\ht0 - \baselineskip\relax
+    \setbox1=\vsplit0 to \ht\strutbox
+    \advance\dimen1 by -\ht0
+    \noindent\raisebox{-\dimen0}[\ht\strutbox][\dp\strutbox]{\box1}%
+    \advance\dimen0 by \dimen1
+    \vspace{-0.2ex}\hrule\vskip 0.2ex
+  \repeat
+\endgroup}
 \endinput
 %%
 %% End of file `sjtuthesis.cls'.

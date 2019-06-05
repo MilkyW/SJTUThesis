@@ -57,49 +57,53 @@
   bottom     = 4.0cm,
   left       = 3.3cm,
   right      = 2.8cm}
-\fancypagestyle{plain}{%
+\fancypagestyle{sjtu@plain}{%
   \fancyhf{}
-  \fancyhead[C]{\sjtu@subtitle@chi}
+  \fancyhead[C]{\zihao{-5}\sjtu@subtitle@chi}
   \fancyfoot[C]{\small ---~{\bfseries\thepage}~---}
 }
 \renewcommand\frontmatter{%
   \cleardoublepage
   \@mainmatterfalse
   \pagenumbering{Roman}%
-  \pagestyle{plain}%
+  \pagestyle{sjtu@plain}%
 }
 \renewcommand\mainmatter{%
   \cleardoublepage
   \@mainmattertrue
   \pagenumbering{arabic}%
-  \pagestyle{plain}%
+  \pagestyle{sjtu@plain}%
 }
 \renewcommand{\cftchapfont}{\bfseries\heiti}
-\NewDocumentEnvironment{abstract}{}{%
-  \cleardoublepage
+\NewDocumentEnvironment{abstract}{}%
+{\cleardoublepage
   \pdfbookmark[0]{\sjtu@abstract}{abstract}
   \chapter*{%
-    \sjtu@title \vskip 24bp
+    \sjtu@title \vskip 16bp
     \sjtu@abstract@chi
   }
-  \markboth{\sjtu@abstract@chi}{\sjtu@abstract@chi}
+  \markboth{\sjtu@abstract@chi}{}
   \zihao{4}
 }{%
-  \vspace{2ex}\noindent
+  \vspace{3ex}\noindent
   {\heiti\sjtu@keywords@chi}\sjtu@keywords
 }
 \NewDocumentEnvironment{englishabstract}{}{%
   \cleardoublepage
   \chapter*{%
-    \MakeUppercase\sjtu@englishtitle \vskip 24bp
+    \MakeUppercase\sjtu@englishtitle \vskip 16bp
     \MakeUppercase\sjtu@abstract@eng
   }
-  \markboth{\sjtu@abstract@eng}{\sjtu@abstract@eng}
+  \markboth{\sjtu@abstract@eng}{}
   \zihao{4}
 }{%
-  \vspace{2ex}\noindent
+  \vspace{3ex}\noindent
   {\bfseries\MakeUppercase\sjtu@keywords@eng}\sjtu@englishkeywords
 }
+\newcommand\sjtu@bigabstract[1]{\long\gdef\sjtu@bigabstract@body{#1}}
+\NewDocumentEnvironment{bigabstract}{}
+{\Collect@Body\sjtu@bigabstract}
+{}
 \RenewDocumentCommand\maketitle{}{%
   \sjtu@makechinesetitle%
   \sjtu@makeenglishtitle%
