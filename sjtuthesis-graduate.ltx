@@ -20,36 +20,38 @@
 \ProvidesFile{sjtuthesis-graduate.ltx}
   [2018/01/11 1.0.0rc Shanghai Jiao Tong University Thesis Template]
 \ifsjtu@doctor
-  \def\sjtu@degree@chi{博士}
-  \def\sjtu@degree@eng{Doctor}
+  \sjtu@def@label{degreeChi}{博士}
+  \sjtu@def@label{degreeEng}{Doctor}
 \else
-  \def\sjtu@degree@chi{硕士}
-  \def\sjtu@degree@eng{Master}
+  \sjtu@def@label{degreeChi}{硕士}
+  \sjtu@def@label{degreeEng}{Master}
 \fi
-\def\sjtu@author@chi{\sjtu@degree@chi 研究生}
-\def\sjtu@author@eng{Candidate}
-\def\sjtu@studentid@chi{学号}
-\def\sjtu@studentid@eng{Student ID}
-\def\sjtu@supervisor@chi{导师}
-\def\sjtu@supervisor@eng{Supervisor}
-\def\sjtu@assisupervisor@chi{副导师}
-\def\sjtu@assisupervisor@eng{Assistant Supervisor}
-\def\sjtu@degreeapplied@chi{申请学位}
-\def\sjtu@degreeapplied@eng{Academic Degree Applied for}
-\def\sjtu@major@chi{学科}
-\def\sjtu@major@eng{Speciality}
-\def\sjtu@department@chi{所在单位}
-\def\sjtu@department@eng{Affiliation}
-\def\sjtu@defenddate@chi{答辩日期}
-\def\sjtu@defenddate@eng{Date of Defence}
-\def\sjtu@conferring@chi{授予学位单位}
-\def\sjtu@conferring@eng{Degree-Conferring-Institution}
-\def\sjtu@subtitle@chi{%
-  \sjtu@school@chi\sjtu@degree@chi 学位论文
+\sjtu@def@label{authorChi}{\sjtu@label@degreeChi 研究生}
+\sjtu@def@label{authorEng}{Candidate}
+\sjtu@def@label{studentidChi}{学号}
+\sjtu@def@label{studentidEng}{Student ID}
+\sjtu@def@label{supervisorChi}{导师}
+\sjtu@def@label{supervisorEng}{Supervisor}
+\sjtu@def@label{assisupervisorChi}{副导师}
+\sjtu@def@label{assisupervisorEng}{Assistant Supervisor}
+\sjtu@def@label{degreeappliedChi}{申请学位}
+\sjtu@def@label{degreeappliedEng}{Academic Degree Applied for}
+\sjtu@def@label{majorChi}{学科}
+\sjtu@def@label{majorEng}{Speciality}
+\sjtu@def@label{departmentChi}{所在单位}
+\sjtu@def@label{departmentEng}{Affiliation}
+\sjtu@def@label{defenddateChi}{答辩日期}
+\sjtu@def@label{defenddateEng}{Date of Defence}
+\sjtu@def@label{conferringChi}{授予学位单位}
+\sjtu@def@label{conferringEng}{Degree-Conferring-Institution}
+\sjtu@def@label{thesiscat}{学位论文}
+\def\sjtu@label@thesistype{\sjtu@label@thesiscat}
+\sjtu@def@label{subjectChi}{%
+  \sjtu@label@schoolChi\sjtu@label@degreeChi\sjtu@label@thesiscat
 }
-\def\sjtu@subtitle@eng{%
-  Dissertation Submitted to \sjtu@school@eng \\%
-  for the Degree of \sjtu@degree@eng
+\sjtu@def@label{subjectEng}{%
+  Dissertation Submitted to \sjtu@label@schoolEng \\%
+  for the Degree of \sjtu@label@degreeEng
 }
 \geometry{%
   paper      = a4paper,
@@ -59,47 +61,47 @@
   right      = 2.8cm}
 \fancypagestyle{sjtu@plain}{%
   \fancyhf{}
-  \fancyhead[C]{\zihao{-5}\sjtu@subtitle@chi}
+  \fancyhead[C]{\zihao{-5}\sjtu@label@subjectChi}
   \fancyfoot[C]{\small ---~{\bfseries\thepage}~---}
 }
+\AtBeginDocument{%
+  \pagenumbering{Alph}
+  \pagestyle{empty}}
 \renewcommand\frontmatter{%
   \cleardoublepage
   \@mainmatterfalse
-  \pagenumbering{Roman}%
-  \pagestyle{sjtu@plain}%
-}
+  \pagenumbering{Roman}
+  \pagestyle{sjtu@plain}}
 \renewcommand\mainmatter{%
   \cleardoublepage
   \@mainmattertrue
-  \pagenumbering{arabic}%
-  \pagestyle{sjtu@plain}%
-}
+  \pagenumbering{arabic}
+  \pagestyle{sjtu@plain}}
 \renewcommand{\cftchapfont}{\bfseries\heiti}
 \NewDocumentEnvironment{abstract}{}%
 {\cleardoublepage
-  \pdfbookmark[0]{\sjtu@abstract}{abstract}
+  \pdfbookmark[0]{\sjtu@label@abstract}{abstract}
   \chapter*{%
-    \sjtu@title \vskip 16bp
-    \sjtu@abstract@chi
+    \sjtu@value@title \vskip 16bp
+    \sjtu@label@abstractChi
   }
-  \markboth{\sjtu@abstract@chi}{}
+  \markboth{\sjtu@label@abstractChi}{}
   \zihao{4}
 }{%
   \vspace{3ex}\noindent
-  {\heiti\sjtu@keywords@chi}\sjtu@keywords
+  {\heiti\sjtu@label@keywordsChi}\sjtu@value@keywords
 }
 \NewDocumentEnvironment{englishabstract}{}{%
   \cleardoublepage
   \chapter*{%
-    \MakeUppercase\sjtu@englishtitle \vskip 16bp
-    \MakeUppercase\sjtu@abstract@eng
-  }
-  \markboth{\sjtu@abstract@eng}{}
+    \MakeUppercase\sjtu@value@englishtitle \vskip 16bp
+    \MakeUppercase\sjtu@label@abstractEng}
+  \markboth{\sjtu@label@abstractEng}{}
   \zihao{4}
 }{%
   \vspace{3ex}\noindent
-  {\bfseries\MakeUppercase\sjtu@keywords@eng}\sjtu@englishkeywords
-}
+  {\bfseries\MakeUppercase\sjtu@label@keywordsEng}
+  \sjtu@value@englishkeywords}
 \newcommand\sjtu@bigabstract[1]{\long\gdef\sjtu@bigabstract@body{#1}}
 \NewDocumentEnvironment{bigabstract}{}
 {\Collect@Body\sjtu@bigabstract}
@@ -113,26 +115,27 @@
   \thispagestyle{empty}
   \begin{center}
     \vspace*{36bp}
-    {\zihao{-2}\sjtu@subtitle@chi}
+    {\zihao{-2}\sjtu@label@subjectChi}
     \vskip \stretch{4}
-    {\zihao{2}\heiti\sjtu@title \vskip 1bp}
+    {\zihao{2}\heiti\sjtu@value@title \vskip 1bp}
     \vskip \stretch{4}
     {\zihao{4}
       \def\tabcolsep{1bp}
       \def\arraystretch{1.25}
       \begin{tabular}
-        {>{\begin{CJKfilltwosides}[t]{6\ccwd}\heiti}r<{\end{CJKfilltwosides}}@{：}l}
-        \sjtu@author@chi           & \sjtu@author          \\
-        \sjtu@studentid@chi        & \sjtu@studentid       \\
-        \sjtu@supervisor@chi       & \sjtu@supervisor      \\
-        \ifx\sjtu@englishassisupervisor\sjtu@empty\else
-          \sjtu@assisupervisor@chi & \sjtu@assisupervisor  \\
+        {>{\begin{CJKfilltwosides}[t]{6\ccwd}\heiti}r<{\end{CJKfilltwosides}}
+          @{：}l}
+        \sjtu@label@authorChi           & \sjtu@value@author         \\
+        \sjtu@label@studentidChi        & \sjtu@value@studentid      \\
+        \sjtu@label@supervisorChi       & \sjtu@value@supervisor     \\
+        \ifx\sjtu@value@assisupervisor\@empty\else
+          \sjtu@label@assisupervisorChi & \sjtu@value@assisupervisor \\
         \fi
-        \sjtu@degreeapplied@chi    & \sjtu@degreeapplied   \\
-        \sjtu@major@chi            & \sjtu@major           \\
-        \sjtu@department@chi       & \sjtu@department      \\
-        \sjtu@defenddate@chi       & \sjtu@date            \\
-        \sjtu@conferring@chi       & \sjtu@school@chi      \\
+        \sjtu@label@degreeappliedChi    & \sjtu@value@degreeapplied  \\
+        \sjtu@label@majorChi            & \sjtu@value@major          \\
+        \sjtu@label@departmentChi       & \sjtu@value@department     \\
+        \sjtu@label@defenddateChi       & \sjtu@value@date           \\
+        \sjtu@label@conferringChi       & \sjtu@label@schoolChi      \\
       \end{tabular}}
     \vskip \stretch{1}
   \end{center}
@@ -143,26 +146,26 @@
   \thispagestyle{empty}
   \begin{center}
     \vspace*{36bp}
-    {\zihao{-2}\sjtu@subtitle@eng}
+    {\zihao{-2}\sjtu@label@subjectEng}
     \vskip \stretch{4}
-    {\zihao{2}\bfseries\MakeUppercase\sjtu@englishtitle \vskip 1bp}
+    {\zihao{2}\bfseries\MakeUppercase\sjtu@value@englishtitle \vskip 1bp}
     \vskip \stretch{4}
     {\zihao{4}
       \def\tabcolsep{1bp}
       \def\arraystretch{1.3}
       \begin{tabular}
         {>{\bfseries}l<{:~}l}
-        \sjtu@author@eng           & \sjtu@englishauthor         \\
-        \sjtu@studentid@eng        & \sjtu@studentid             \\
-        \sjtu@supervisor@eng       & \sjtu@englishsupervisor     \\
-        \ifx\sjtu@englishassisupervisor\sjtu@empty\else
-          \sjtu@assisupervisor@eng & \sjtu@englishassisupervisor \\
+        \sjtu@label@authorEng           & \sjtu@value@englishauthor         \\
+        \sjtu@label@studentidEng        & \sjtu@value@studentid             \\
+        \sjtu@label@supervisorEng       & \sjtu@value@englishsupervisor     \\
+        \ifx\sjtu@value@englishassisupervisor\@empty\else
+          \sjtu@label@assisupervisorEng & \sjtu@value@englishassisupervisor \\
         \fi
-        \sjtu@degreeapplied@eng    & \sjtu@englishdegreeapplied  \\
-        \sjtu@major@eng            & \sjtu@englishmajor          \\
-        \sjtu@department@eng       & \sjtu@englishdepartment     \\
-        \sjtu@defenddate@eng       & \sjtu@englishdate           \\
-        \sjtu@conferring@eng       & \sjtu@school@eng            \\
+        \sjtu@label@degreeappliedEng    & \sjtu@value@englishdegreeapplied  \\
+        \sjtu@label@majorEng            & \sjtu@value@englishmajor          \\
+        \sjtu@label@departmentEng       & \sjtu@value@englishdepartment     \\
+        \sjtu@label@defenddateEng       & \sjtu@value@englishdate           \\
+        \sjtu@label@conferringEng       & \sjtu@label@schoolEng             \\
       \end{tabular}}
     \vskip \stretch{1}
   \end{center}

@@ -30,8 +30,8 @@
   setkeys=\kvsetkeys}
 \DeclareStringOption[doctor]{degree}[doctor]
 \DeclareStringOption[chinese]{language}[chinese]
-\DeclareBoolOption{review}
 \DeclareStringOption[5]{zihao}[5]
+\DeclareBoolOption{review}
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{ctexbook}}
 \ProcessKeyvalOptions*
 \newcommand\sjtu@validate@key[1]{%
@@ -56,117 +56,12 @@
 \fi
 \PassOptionsToPackage{no-math}{fontspec}
 \LoadClass[a4paper,zihao=\sjtu@zihao,linespread=1.3,UTF8]{ctexbook}
-\sjtu@mastertrue
-\ifsjtu@bachelor
-  \AtEndOfClass{\input{sjtuthesis-bachelor.ltx}}
-\else
-  \ifsjtu@master
-    \AtEndOfClass{\input{sjtuthesis-graduate.ltx}}
-  \fi
-\fi
-\def\sjtu@def@term#1{%
-\define@key{sjtu}{#1}{\csname #1\endcsname{##1}}
-\expandafter\gdef\csname #1\endcsname##1{%
-  \expandafter\gdef\csname sjtu@#1\endcsname{##1}}
-\csname #1\endcsname{}}
-\sjtu@def@term{title}
-\sjtu@def@term{englishtitle}
-\sjtu@def@term{keywords}
-\sjtu@def@term{englishkeywords}
-\sjtu@def@term{author}
-\sjtu@def@term{supervisor}
-\sjtu@def@term{assisupervisor}
-\sjtu@def@term{englishauthor}
-\sjtu@def@term{englishsupervisor}
-\sjtu@def@term{englishassisupervisor}
-\sjtu@def@term{studentid}
-\sjtu@def@term{degreeapplied}{}
-\sjtu@def@term{englishdegreeapplied}{}
-\sjtu@def@term{department}
-\sjtu@def@term{englishdepartment}
-\sjtu@def@term{major}
-\sjtu@def@term{englishmajor}
-\sjtu@def@term{coursename}
-\sjtu@def@term{englishcoursename}
-\sjtu@def@term{date}
-\sjtu@def@term{englishdate}
-\def\sjtusetup{\kvsetkeys{sjtu}}
-\def\sjtu@empty{}
-\def\sjtu@school@chi{上海交通大学}
-\def\sjtu@school@eng{Shanghai Jiao Tong University}
-\def\sjtu@original@chi{学位论文原创性声明}
-\def\sjtu@authorization@chi{学位论文版权使用授权书}
-\def\sjtu@originality{%
-  本人郑重声明：所呈交的学位论文《\sjtu@title》，是本人在导师的指导
-  下，独立进行研究工作所取得的成果。除文中已经注明引用的内容外，本论
-  文不包含任何其他个人或集体已经发表或撰写过的作品成果。对本文的研究
-  做出重要贡献的个人和集体，均已在文中以明确方式标明。本人完全意识到
-  本声明的法律结果由本人承担。}
-\def\sjtu@authorization{%
-  本学位论文作者完全了解学校有关保留、使用学位论文的规定，同意学校保
-  留并向国家有关部门或机构送交论文的复印件和电子版，允许论文被查阅和
-  借阅。本人授权上海交通大学可以将本学位论文的全部或部分内容编入有关
-  数据库进行检索，可以采用影印、缩印或扫描等复制手段保存和汇编本学位
-  论文。}
-\def\sjtu@abstract@chi{摘要}
-\def\sjtu@abstract@eng{Abstract}
-\def\sjtu@keywords@chi{关键词：}
-\def\sjtu@keywords@eng{Key words:~}
-\ifsjtu@english
-  \def\sjtu@titlepage{Title Page}
-  \let\sjtu@abstract\sjtu@abstract@eng
-  \def\sjtu@figurename{Figure}
-  \def\sjtu@listfigurename{List of Figures}
-  \def\sjtu@tablename{Table}
-  \def\sjtu@listtablename{List of Tables}
-  \def\sjtu@nomenclature{Nomenclature}
-  \def\sjtu@ack{Acknowledgements}
-  \def\sjtu@publications{Publications}
-  \def\sjtu@patents{Patents}
-  \def\sjtu@projects{Projects}
-\else
-  \def\sjtu@titlepage{扉页}
-  \let\sjtu@abstract\sjtu@abstract@chi
-  \def\sjtu@figurename{图}
-  \def\sjtu@listfigurename{插图索引}
-  \def\sjtu@tablename{表}
-  \def\sjtu@listtablename{表格索引}
-  \def\sjtu@nomenclature{主要符号对照表}
-  \def\sjtu@ack{致谢}
-  \def\sjtu@publications{攻读学位期间发表的学术论文}
-  \def\sjtu@patents{攻读学位期间申请的专利}
-  \def\sjtu@projects{攻读学位期间参与的项目}
-\fi
-\RequirePackage{xparse}
 \RequirePackage{etoolbox}
-\patchcmd\cleardoublepage
-  {\newpage}{\thispagestyle{empty}\newpage}
-  {}{}
-\patchcmd\chapter
-  {\thispagestyle{\CTEX@chapter@pagestyle}}{}
-  {}{}
-\patchcmd\@chapter
-  {\if@twocolumn}
-  {\addtocontents{loa}{\protect\addvspace{10\p@}}%
-   \if@twocolumn}
-  {}{}
-\patchcmd\tableofcontents
-  {\chapter}
-  {\cleardoublepage%
-   \pdfbookmark[0]{\contentsname}{toc}%
-   \chapter}
-  {}{}
+\RequirePackage{xparse}
+\RequirePackage{environ}
 \RequirePackage{geometry}
 \RequirePackage{fancyhdr}
 \RequirePackage{pageslts}
-\AtBeginDocument{%
-  \pagenumbering{Alph}%
-  \pagestyle{empty}%
-}
-\RequirePackage[titles]{tocloft}
-\setcounter{secnumdepth}{4}
-\setcounter{tocdepth}{2}
-\RequirePackage{environ}
 \RequirePackage{mathtools}
 \RequirePackage[defaultsups]{newtxtext}
 \RequirePackage{newtxmath}
@@ -176,33 +71,13 @@
 \RequirePackage{array}
 \RequirePackage{multirow}
 \RequirePackage{booktabs}
-\RequirePackage{threeparttable}
 \RequirePackage{longtable}
-\appto\TPTnoteSettings{\footnotesize}
 \RequirePackage{caption}
 \RequirePackage[list=off]{bicaption}
 \RequirePackage{subcaption}
-\DeclareCaptionFont{kaishu}{\kaishu}
-\captionsetup{%
-  format        = plain,
-  labelformat   = simple,
-  labelsep      = space,
-  justification = centering,
-  font          = {small,kaishu}}
-\DeclareCaptionOption{bi-first}[]{%
-  \def\tablename{\sjtu@tablename}
-  \def\figurename{\sjtu@figurename}}
-\DeclareCaptionOption{bi-second}[]{%
-  \def\tablename{Table}
-  \def\figurename{Figure}}
-\captionsetup[bi-first]{bi-first}
-\captionsetup[bi-second]{bi-second}
-\captionsetup[sub]{font=footnotesize}
 \RequirePackage[backend=biber,style=gb7714-2015]{biblatex}
+\RequirePackage[titles]{tocloft}
 \RequirePackage[inline]{enumitem}
-\setlist{nosep}
-\setlist*{leftmargin=*}
-\setlist[1]{labelindent=\parindent}
 \RequirePackage[perpage, bottom]{footmisc}
 \RequirePackage{pdfpages}
 \includepdfset{fitpaper=true}
@@ -222,8 +97,103 @@
   \let\\\@empty
   \let\hspace\@gobble
 }
+\urlstyle{same}
+\def\UrlBreaks{%
+  \do\/%
+  \do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l%
+     \do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z%
+  \do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L%
+     \do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z%
+  \do0\do1\do2\do3\do4\do5\do6\do7\do8\do9\do=\do/\do.\do:%
+  \do\*\do\-\do\~\do\'\do\"\do\-}
+\Urlmuskip=0mu plus 0.1mu
+\newcommand\sjtu@def@term[1]{%
+  \expandafter\gdef\csname #1\endcsname##1{%
+    \expandafter\gdef\csname sjtu@value@#1\endcsname{##1}}
+  \csname #1\endcsname{}
+  \define@key{sjtuvalue}{#1}{\csname #1\endcsname{##1}}}
+\sjtu@def@term{title}
+\sjtu@def@term{englishtitle}
+\sjtu@def@term{keywords}
+\sjtu@def@term{englishkeywords}
+\sjtu@def@term{author}
+\sjtu@def@term{supervisor}
+\sjtu@def@term{assisupervisor}
+\sjtu@def@term{englishauthor}
+\sjtu@def@term{englishsupervisor}
+\sjtu@def@term{englishassisupervisor}
+\sjtu@def@term{studentid}
+\sjtu@def@term{degreeapplied}
+\sjtu@def@term{englishdegreeapplied}
+\sjtu@def@term{department}
+\sjtu@def@term{englishdepartment}
+\sjtu@def@term{major}
+\sjtu@def@term{englishmajor}
+\sjtu@def@term{coursename}
+\sjtu@def@term{englishcoursename}
+\sjtu@def@term{date}
+\sjtu@def@term{englishdate}
+\NewDocumentCommand\sjtuSetInfo{}{\setkeys{sjtuvalue}}
+\newcommand\sjtu@def@label[2]{%
+  \expandafter\gdef\csname sjtu@label@#1\endcsname{#2}
+  \define@key{sjtulabel}{#1}{%
+    \expandafter\gdef\csname sjtu@label@#1\endcsname{##1}}}
+\sjtu@def@label{schoolChi}{上海交通大学}
+\sjtu@def@label{schoolEng}{Shanghai Jiao Tong University}
+\sjtu@def@label{origtitle}{\sjtu@label@thesistype 原创性声明}
+\sjtu@def@label{authtitle}{\sjtu@label@thesistype 版权使用授权书}
+\sjtu@def@label{origbody}{%
+  本人郑重声明：所呈交的\sjtu@label@thesistype 《\sjtu@value@title》，是
+  本人在导师的指导下，独立进行研究工作所取得的成果。除文中已经注明引用的
+  内容外，本论文不包含任何其他个人或集体已经发表或撰写过的作品成果。对本
+  文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。本人完全意
+  识到本声明的法律结果由本人承担。}
+\sjtu@def@label{authbody}{%
+  本\sjtu@label@thesistype 作者完全了解学校有关保留、使用\sjtu@label@thesistype
+  的规定，同意学校保留并向国家有关部门或机构送交论文的复印件和电子版，允
+  许论文被查阅和借阅。本人授权上海交通大学可以将本\sjtu@label@thesistype
+  的全部或部分内容编入有关数据库进行检索，可以采用影印、缩印或扫描等复制
+  手段保存和汇编本\sjtu@label@thesistype 。}
+\sjtu@def@label{abstractChi}{摘要}
+\sjtu@def@label{abstractEng}{Abstract}
+\sjtu@def@label{keywordsChi}{关键词：}
+\sjtu@def@label{keywordsEng}{Key words:~}
+\ifsjtu@english
+  \sjtu@def@label{titlepage}{Title Page}
+  \def\sjtu@label@abstract{\sjtu@label@abstractEng}
+  \sjtu@def@label{figurename}{Figure}
+  \sjtu@def@label{listfigurename}{List of Figures}
+  \sjtu@def@label{tablename}{Table}
+  \sjtu@def@label{listtablename}{List of Tables}
+  \sjtu@def@label{nomenclature}{Nomenclature}
+  \sjtu@def@label{acknowledgements}{Acknowledgements}
+  \sjtu@def@label{publications}{Publications}
+  \sjtu@def@label{patents}{Patents}
+  \sjtu@def@label{projects}{Projects}
+\else
+  \sjtu@def@label{titlepage}{扉页}
+  \def\sjtu@label@abstract{\sjtu@label@abstractChi}
+  \sjtu@def@label{figurename}{图}
+  \sjtu@def@label{listfigurename}{插图索引}
+  \sjtu@def@label{tablename}{表}
+  \sjtu@def@label{listtablename}{表格索引}
+  \sjtu@def@label{nomenclature}{主要符号对照表}
+  \sjtu@def@label{acknowledgements}{致谢}
+  \sjtu@def@label{publications}%
+                 {攻读\sjtu@label@degreeChi 学位期间已发表或录用的论文}
+  \sjtu@def@label{patents}%
+                 {攻读\sjtu@label@degreeChi 学位期间申请的专利}
+  \sjtu@def@label{projects}%
+                 {攻读\sjtu@label@degreeChi 学位期间参与的项目}
+\fi
+\NewDocumentCommand\sjtuSetLabel{}{\setkeys{sjtulabel}}
+\patchcmd\cleardoublepage
+  {\newpage}{\thispagestyle{empty}\newpage}
+  {}{}
+\patchcmd\chapter
+  {\thispagestyle{\CTEX@chapter@pagestyle}}{}
+  {}{}
 \ctexset{%
-  autoindent     = true,
   chapter={%
     format       = \zihao{3}\bfseries\heiti\centering,
     nameformat   = {},
@@ -250,13 +220,53 @@
   },
   paragraph/afterindent    = true,
   subparagraph/afterindent = true,}
-\newcommand\sjtu@authorization@cont{%
+\ctexset{%
+  punct          = quanjiao,
+  space          = auto,
+  autoindent     = true}
+\setlist{nosep}
+\setlist*{leftmargin=*}
+\setlist[1]{labelindent=\parindent}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+\patchcmd\tableofcontents
+{\chapter}
+{\cleardoublepage%
+  \pdfbookmark[0]{\contentsname}{toc}%
+  \chapter}
+{}{}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.65}
+\renewcommand{\floatpagefraction}{0.60}
+\AtBeginDocument{%
+  \renewcommand{\theequation}{\thechapter--\arabic{equation}}
+  \renewcommand{\thefigure}{\thechapter--\arabic{figure}}
+  \renewcommand\p@subfigure{\thefigure}
+  \renewcommand{\thetable}{\thechapter--\arabic{table}}}
+\DeclareCaptionFont{kaishu}{\kaishu}
+\captionsetup{%
+  format        = plain,
+  labelformat   = simple,
+  labelsep      = space,
+  justification = centering,
+  font          = {small,kaishu}}
+\DeclareCaptionOption{bi-first}[]{%
+  \def\tablename{\sjtu@tablename}
+  \def\figurename{\sjtu@figurename}}
+\DeclareCaptionOption{bi-second}[]{%
+  \def\tablename{Table}
+  \def\figurename{Figure}}
+\captionsetup[bi-first]{bi-first}
+\captionsetup[bi-second]{bi-second}
+\captionsetup[sub]{font=footnotesize}
+\newcommand\sjtu@authconf{%
   \par\hspace{8em}
-  {\heiti 保　密} $\Box$，在 \uline{\hspace{2em}}
+  {\heiti 保　密} $\square$，在 \uline{\hspace{3em}}
   年解密后适用本授权书。\par
-  本学位论文属于：
+  本\sjtu@label@thesiscat 属于：
   \par\hspace{8em}
-  {\heiti 不保密} $\Box$。
+  {\heiti 不保密} $\square$。
   \vskip 1ex
   （请在以上方框内打钩）
 }
@@ -272,16 +282,16 @@
     \IfNoValueTF{#1}{%
       \cleardoublepage
       \thispagestyle{empty}
-      \chapter*{\zihao{-2}\sjtu@school@chi \\%
-                \sjtu@original@chi}
+      \chapter*{\zihao{-2}\sjtu@label@schoolChi \\%
+                \sjtu@label@origtitle}
       {%
         \zihao{4}
-        \sjtu@originality
+        \sjtu@label@origbody
         \vskip16ex
         \noindent
         \begin{minipage}{\textwidth}
           \hfill
-          \sjtu@signbox{学位论文作者}
+          \sjtu@signbox{\sjtu@label@thesiscat 作者}
         \end{minipage}
       }
     }{\includepdf[pagecommand={\thispagestyle{empty}}]{#1}}
@@ -292,17 +302,17 @@
     \IfNoValueTF{#1}{%
       \cleardoublepage
       \thispagestyle{empty}
-      \chapter*{\zihao{-2}\sjtu@school@chi \\%
-                \sjtu@authorization@chi}
+      \chapter*{\zihao{-2}\sjtu@label@schoolChi \\%
+                \sjtu@label@authtitle}
       {%
         \zihao{4}
-        \sjtu@authorization
+        \sjtu@label@authbody
         \vskip1ex
-        \sjtu@authorization@cont
+        \sjtu@authconf
         \vskip16ex
         \noindent
         \begin{minipage}{\textwidth}
-          \sjtu@signbox{学位论文作者}
+          \sjtu@signbox{\sjtu@label@thesiscat 作者}
           \hfill
           \sjtu@signbox{指导教师}
         \end{minipage}
@@ -312,20 +322,20 @@
 }
 \NewDocumentEnvironment{nomenclature}{m}
 {\cleardoublepage
-  \chapter{\sjtu@nomenclature}
-  \markboth{\sjtu@nomenclature}{}
+  \chapter{\sjtu@label@nomenclature}
+  \markboth{\sjtu@label@nomenclature}{}
   \begin{longtable}{#1}}
 {\end{longtable}}
-\newcommand\sjtu@acknowledge[1]{\long\gdef\sjtu@acknowledge@body{#1}}
+\newcommand\sjtu@acknowledgements[1]{\long\gdef\sjtu@acknowledgements@body{#1}}
 \NewDocumentEnvironment{acknowledgements}{}
-{\Collect@Body\sjtu@acknowledge}
+{\Collect@Body\sjtu@acknowledgements}
 {
   \ifsjtu@review\relax\else%
     \cleardoublepage
-    \chapter*{\sjtu@ack}
-    \markboth{\sjtu@ack}{}
-    \addcontentsline{toc}{chapter}{\sjtu@ack}
-    \sjtu@acknowledge@body
+    \chapter*{\sjtu@label@acknowledgements}
+    \markboth{\sjtu@label@acknowledgements}{}
+    \addcontentsline{toc}{chapter}{\sjtu@label@acknowledgements}
+    \sjtu@acknowledgements@body
   \fi
 }
 \NewDocumentEnvironment{sjtu@bibliolist}{o}{%
@@ -347,25 +357,25 @@
   \endlist}
 \NewDocumentEnvironment{publications}{O{99}}
 {\cleardoublepage
-  \chapter{\sjtu@publications}
-  \markboth{\sjtu@publications}{}
+  \chapter{\sjtu@label@publications}
+  \markboth{\sjtu@label@publications}{}
   \begin{sjtu@bibliolist}[#1]}
 {\end{sjtu@bibliolist}}
 \NewDocumentEnvironment{patents}{O{99}}
 {\cleardoublepage
-  \chapter{\sjtu@patents}
-  \markboth{\sjtu@patents}{}
+  \chapter{\sjtu@label@patents}
+  \markboth{\sjtu@label@patents}{}
   \begin{sjtu@bibliolist}[#1]}
 {\end{sjtu@bibliolist}}
 \NewDocumentEnvironment{projects}{O{99}}
 {\cleardoublepage
-  \chapter{\sjtu@projects}
-  \markboth{\sjtu@projects}{}
+  \chapter{\sjtu@label@projects}
+  \markboth{\sjtu@label@projects}{}
   \begin{sjtu@bibliolist}[#1]}
 {\end{sjtu@bibliolist}}
 \AtBeginDocument{
   \ifsjtu@review
-    \sjtusetup{
+    \sjtuSetInfo{
       author={},
       supervisor={},
       assisupervisor={},
@@ -375,19 +385,13 @@
       studentid={}
     }
   \fi
-  \ifsjtu@english
-    \hypersetup{
-      pdftitle    = \sjtu@englishtitle,
-      pdfauthor   = \sjtu@englishauthor,
-      pdfkeywords = \sjtu@englishkeywords,
-    }%
-  \else
-    \hypersetup{
-      pdftitle    = \sjtu@title,
-      pdfauthor   = \sjtu@author,
-      pdfkeywords = \sjtu@keywords,
-    }%
-  \fi
+  \hypersetup{
+    pdftitle    = \sjtu@value@englishtitle,
+    pdfauthor   = \sjtu@value@englishauthor,
+    pdfsubject  = \sjtu@label@subjectEng,
+    pdfkeywords = \sjtu@value@englishkeywords,
+    pdfcreator  = {LaTeX with SJTUThesis \version}
+  }%
 }
 \newcommand{\sjtu@uline}[1]%
 {\begingroup
@@ -402,6 +406,13 @@
     \vspace{-0.2ex}\hrule\vskip 0.2ex
   \repeat
 \endgroup}
+\ifsjtu@bachelor
+  \AtEndOfClass{\input{sjtuthesis-bachelor.ltx}}
+\else
+  \ifsjtu@master
+    \AtEndOfClass{\input{sjtuthesis-graduate.ltx}}
+  \fi
+\fi
 \endinput
 %%
 %% End of file `sjtuthesis.cls'.

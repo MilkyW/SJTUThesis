@@ -19,34 +19,43 @@
 %% 
 \ProvidesFile{sjtuthesis-bachelor.ltx}
   [2018/01/11 1.0.0rc Shanghai Jiao Tong University Thesis Template]
-\def\sjtu@degree@chi{学士}
-\def\sjtu@degree@eng{Bachelor}
-\def\sjtu@author@chi{学生姓名}
-\def\sjtu@studentid@chi{学生学号}
-\def\sjtu@supervisor@chi{指导教师}
-\def\sjtu@coursename@chi{课程名称}
-\def\sjtu@major@chi{专业}
-\def\sjtu@department@chi{学院(系)}
 \ifsjtu@course
-  \def\sjtu@subtitle@chi{课程论文}
-  \def\sjtu@subtitle@eng{}
+  \sjtu@def@label{degreeChi}{}
+  \sjtu@def@label{degreeEng}{}
 \else
-  \def\sjtu@subtitle@chi{\sjtu@degree@chi 学位论文}
-  \def\sjtu@subtitle@eng{Thesis of \sjtu@degree@eng}
+  \sjtu@def@label{degreeChi}{学士}
+  \sjtu@def@label{degreeEng}{Bachelor}
+\fi
+\sjtu@def@label{authorChi}{学生姓名}
+\sjtu@def@label{studentidChi}{学生学号}
+\sjtu@def@label{supervisorChi}{指导教师}
+\sjtu@def@label{coursenameChi}{课程名称}
+\sjtu@def@label{majorChi}{专业}
+\sjtu@def@label{departmentChi}{学院(系)}
+\ifsjtu@course
+  \sjtu@def@label{thesiscat}{课程论文}
+  \def\sjtu@label@thesistype{\sjtu@label@thesiscat}
+  \sjtu@def@label{subjectChi}{\sjtu@label@thesiscat}
+  \sjtu@def@label{subjectEng}{Course Paper}
+\else
+  \sjtu@def@label{thesiscat}{学位论文}
+  \def\sjtu@label@thesistype{毕业设计（论文）}
+  \sjtu@def@label{subjectChi}{\sjtu@label@degreeChi\sjtu@label@thesiscat}
+  \sjtu@def@label{subjectEng}{Thesis of \sjtu@label@degreeEng}
 \fi
 \geometry{%
   paper      = a4paper,
   vmargin    = 72bp,
   hmargin    = 90bp}
 \ifsjtu@english
-  \def\sjtu@titlemark{\sjtu@englishtitle}
+  \def\sjtu@titlemark{\sjtu@value@englishtitle}
   \newcommand\sjtu@fancyhead{%
     \parbox[b]{0.75\textwidth}{%
       \raggedleft\nouppercase{\footnotesize\kaishu\sjtu@titlemark}}}
   \newcommand\sjtu@fancyfoot[2]{%
     \small --~~Page~~{\bfseries{#1}}~~of~~{\bfseries{#2}}~~--}
 \else
-  \def\sjtu@titlemark{\sjtu@title}
+  \def\sjtu@titlemark{\sjtu@value@title}
   \newcommand\sjtu@fancyhead{%
     \parbox[b]{0.75\textwidth}{%
       \raggedleft\nouppercase{\small\kaishu\sjtu@titlemark}}}
@@ -55,75 +64,73 @@
 \fi
 \fancypagestyle{sjtu@front}{%
   \fancyhf{}
-  \fancyhead[L]{\includegraphics{figure/sjtubanner}}
+  \fancyhead[L]{\includegraphics{figure/sjtubanner.pdf}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.Roman}}}
 }
 \fancypagestyle{sjtu@plain}{%
   \fancyhf{}
-  \fancyhead[L]{\includegraphics{figure/sjtubanner}}
+  \fancyhead[L]{\includegraphics{figure/sjtubanner.pdf}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.arabic}}}
 }
 \fancypagestyle{sjtu@biglast}{%
   \fancyhf{}
-  \fancyhead[L]{\includegraphics{figure/sjtubanner}}
+  \fancyhead[L]{\includegraphics{figure/sjtubanner.pdf}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\theCurrentPageLocal}%
                                {\lastpageref{pagesLTS.roman.local}}}
 }
+\AtBeginDocument{%
+  \pagenumbering{Alph}
+  \pagestyle{empty}}
 \renewcommand\frontmatter{%
   \cleardoublepage
   \@mainmatterfalse
-  \pagenumbering{Roman}%
-  \pagestyle{sjtu@front}%
-}
+  \pagenumbering{Roman}
+  \pagestyle{sjtu@front}}
 \renewcommand\mainmatter{%
   \cleardoublepage
   \@mainmattertrue
-  \pagenumbering{arabic}%
-  \pagestyle{sjtu@plain}%
-}
+  \pagenumbering{arabic}
+  \pagestyle{sjtu@plain}}
 \renewcommand{\cftchapfont}{\normalfont}
 \NewDocumentEnvironment{abstract}{}%
 {\cleardoublepage
-  \pdfbookmark[0]{\sjtu@abstract}{abstract}
+  \pdfbookmark[0]{\sjtu@label@abstract}{abstract}
   \chapter*{%
-    \sjtu@title \vskip 16bp
-    {\zihao{4}\sjtu@abstract@chi}
+    \sjtu@value@title \vskip 16bp
+    {\zihao{4}\sjtu@label@abstractChi}
   }
-  \markboth{\sjtu@abstract@chi}{}
+  \markboth{\sjtu@label@abstractChi}{}
 }{%
   \vspace{3ex}\noindent
-  {\zihao{-4}\heiti\sjtu@keywords@chi}{\zihao{5}\sjtu@keywords}
+  {\zihao{-4}\heiti\sjtu@label@keywordsChi}{\zihao{5}\sjtu@value@keywords}
 }
 \NewDocumentEnvironment{englishabstract}{}{%
   \cleardoublepage
   \chapter*{%
-    \MakeUppercase\sjtu@englishtitle \vskip 16bp
-    {\zihao{4}\MakeUppercase\sjtu@abstract@eng}
-  }
-  \markboth{\sjtu@abstract@eng}{}
+    \MakeUppercase\sjtu@value@englishtitle \vskip 16bp
+    {\zihao{4}\MakeUppercase\sjtu@label@abstractEng}}
+  \markboth{\sjtu@label@abstractEng}{}
 }{%
   \vspace{3ex}\noindent
-  {\zihao{-4}\bfseries\sjtu@keywords@eng}{\zihao{5}\sjtu@englishkeywords}
-}
+  {\zihao{-4}\bfseries\sjtu@label@keywordsEng}
+  {\zihao{5}\sjtu@value@englishkeywords}}
 \newcommand\sjtu@bigabstract[1]{\long\gdef\sjtu@bigabstract@body{#1}}
 \NewDocumentEnvironment{bigabstract}{}
 {\Collect@Body\sjtu@bigabstract}
-{
-  \ifsjtu@course\relax\else%
-    \ifsjtu@english\relax\else%
-      \AtEndDocument{%
-        \cleardoublepage
-        \pagenumbering{roman}
-        \pagestyle{sjtu@biglast}
-        \chapter*{\MakeUppercase\sjtu@englishtitle}
-        \sjtu@bigabstract@body
-      }
-    \fi
+{\ifsjtu@course\relax\else%
+  \ifsjtu@english\relax\else%
+    \AtEndDocument{%
+      \cleardoublepage
+      \pagenumbering{roman}
+      \pagestyle{sjtu@biglast}
+      \chapter*{\MakeUppercase\sjtu@value@englishtitle}
+      \sjtu@bigabstract@body
+    }
   \fi
-}
+\fi}
 \RenewDocumentCommand\maketitle{}{%
   \sjtu@makechinesetitle%
 }
@@ -133,13 +140,13 @@
   \begin{center}
     \kaishu
     \vspace*{56bp}
-    \includegraphics{sjtulogo}
+    \includegraphics{figure/sjtulogo.pdf}
     \vskip 32bp
-    {\fontsize{32}{32}\sjtu@subtitle@chi}
+    {\fontsize{32}{32}\sjtu@label@subjectChi}
     \vskip 16bp
-    {\zihao{-2}\MakeUppercase\sjtu@subtitle@eng}
+    {\zihao{-2}\MakeUppercase\sjtu@label@subjectEng}
     \vskip 16bp
-    \includegraphics{sjtubadge}
+    \includegraphics{figure/sjtubadge.pdf}
     \vskip \stretch{2}
     {\zihao{2}
       \begin{tabular}{r@{：}l}
@@ -147,7 +154,7 @@
         \begin{minipage}[t]{300pt}
           \zihao{-2}
           \begin{center}
-            \sjtu@uline\sjtu@title
+            \sjtu@uline\sjtu@value@title
           \end{center}
         \end{minipage}
       \end{tabular}}
@@ -156,15 +163,16 @@
       \def\arraystretch{1.1}
       \begin{tabular}
         {>{\begin{CJKfilltwosides}{4\ccwd}}r<{\end{CJKfilltwosides}}@{：}c}
-        \sjtu@author@chi       & \sjtu@author      \\ \cline{2-2}
-        \sjtu@studentid@chi    & \makebox[180pt]{\sjtu@studentid}  \\ \cline{2-2}
+        \sjtu@label@authorChi        & \sjtu@value@author      \\ \cline{2-2}
+        \sjtu@label@studentidChi     & \makebox[180pt]{\sjtu@value@studentid} \\
+          \cline{2-2}
         \ifsjtu@course
-          \sjtu@coursename@chi & \sjtu@coursename  \\ \cline{2-2}
+          \sjtu@label@coursenameChi  & \sjtu@value@coursename  \\ \cline{2-2}
         \else
-          \sjtu@major@chi      & \sjtu@major       \\ \cline{2-2}
+          \sjtu@label@majorChi       & \sjtu@value@major       \\ \cline{2-2}
         \fi
-        \sjtu@supervisor@chi   & \sjtu@supervisor  \\ \cline{2-2}
-        \sjtu@department@chi   & \sjtu@department  \\ \cline{2-2}
+        \sjtu@label@supervisorChi    & \sjtu@value@supervisor  \\ \cline{2-2}
+        \sjtu@label@departmentChi    & \sjtu@value@department  \\ \cline{2-2}
       \end{tabular}}
     \vskip 32bp
   \end{center}

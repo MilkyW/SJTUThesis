@@ -73,6 +73,15 @@ version 2005/12/01 or later.
 \documentclass[a4paper]{ltxdoc}
 \usepackage[fontset=founder,UTF8]{ctex}
 
+% 定义一些命令用于写文档
+\newcommand\TeXLive{\TeX{} Live}
+\newcommand\unicodechar[1]{U+#1（\symbol{"#1}）}
+\DeclareRobustCommand\file{\nolinkurl}
+\DeclareRobustCommand\env{\texttt}
+\DeclareRobustCommand\pkg{\textsf}
+\DeclareRobustCommand\cls{\textsf}
+\DeclareRobustCommand\opt{\texttt}
+
 \begin{document}
   \DocInput{\jobname.dtx}
 \end{document}
@@ -93,29 +102,33 @@ version 2005/12/01 or later.
   setkeys=\kvsetkeys}
 %    \end{macrocode}
 %
-% 用 kvoptions 来设置论文类型。
+% 用 \pkg{kvoptions} 的 \texttt{key=value} 方式来设置论文类型。
 %    \begin{macrocode}
 \DeclareStringOption[doctor]{degree}[doctor]
 %    \end{macrocode}
 %
-% 论文是使用英文。
+% 论文是否使用英文。
 %    \begin{macrocode}
 \DeclareStringOption[chinese]{language}[chinese]
 %    \end{macrocode}
 %
-% 盲审。
-%    \begin{macrocode}
-\DeclareBoolOption{review}
-%    \end{macrocode}
-%
-% 字体。
+% 字号大小。
 %    \begin{macrocode}
 \DeclareStringOption[5]{zihao}[5]
 %    \end{macrocode}
 %
-% 将选项传递给 ctexbook。
+% 盲审模式开关。
+%    \begin{macrocode}
+\DeclareBoolOption{review}
+%    \end{macrocode}
+%
+% 将选项传递给 \pkg{ctexbook}。
 %    \begin{macrocode}
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{ctexbook}}
+%    \end{macrocode}
+%
+% 解析用户传递过来的选项，并加载 \pkg{ctexbook}。
+%    \begin{macrocode}
 \ProcessKeyvalOptions*
 \newcommand\sjtu@validate@key[1]{%
   \@ifundefined{sjtu@\csname sjtu@#1\endcsname true}{%
@@ -137,27 +150,152 @@ version 2005/12/01 or later.
 \ifsjtu@english
   \PassOptionsToClass{scheme=plain}{ctexbook}
 \fi
+%    \end{macrocode}
+%
+% 使用 XeTeX 引擎时，fontspec 宏包会被 xeCJK 自动调用。传递给 fontspec 宏包
+% no-math 选项，避免部分数学符号字体自动调整为 CMR。
+%    \begin{macrocode}
 \PassOptionsToPackage{no-math}{fontspec}
+%    \end{macrocode}
+%
+% 使用 \pkg{ctexbook} 类，优于调用 \pkg{ctex} 宏包。
+%    \begin{macrocode}
 \LoadClass[a4paper,zihao=\sjtu@zihao,linespread=1.3,UTF8]{ctexbook}
-\sjtu@mastertrue
-\ifsjtu@bachelor
-  \AtEndOfClass{\input{sjtuthesis-bachelor.ltx}}
-\else
-  \ifsjtu@master
-    \AtEndOfClass{\input{sjtuthesis-graduate.ltx}}
-  \fi
-\fi
+%    \end{macrocode}
+%
+% \subsection{载入宏包}
+% 
+% 建议在模板开始处载入全部宏包，不要轻易改变加载顺序。\pkg{hyperref} 一般在最后
+% 加载。
+%    \begin{macrocode}
+\RequirePackage{etoolbox}
+\RequirePackage{xparse}
+\RequirePackage{environ}
+%    \end{macrocode}
+%
+% 使用 \pkg{geometry} 设置页面。
+%    \begin{macrocode}
+\RequirePackage{geometry}
+%    \end{macrocode}
+%
+% 使用 \pkg{fancyhdr} 设置页眉页脚。
+%    \begin{macrocode}
+\RequirePackage{fancyhdr}
+%    \end{macrocode}
+%
+% 使用 \pkg{pageslts} 设置页码格式。
+%    \begin{macrocode}
+\RequirePackage{pageslts}
+%    \end{macrocode}
+%
+% 使用 \pkg{mathtools} 处理数学公式。
+%    \begin{macrocode}
+\RequirePackage{mathtools}
+%    \end{macrocode}
+%
+% 字体相关宏包。
+%    \begin{macrocode}
+\RequirePackage[defaultsups]{newtxtext}
+\RequirePackage{newtxmath}
+\RequirePackage[opentype]{sourcecodepro}
+\RequirePackage{anyfontsize}
+%    \end{macrocode}
+%
+% 图形支持宏包。
+%    \begin{macrocode}
+\RequirePackage{graphicx}
+%    \end{macrocode}
+%
+% 表格支持宏包。
+%    \begin{macrocode}
+\RequirePackage{array}
+\RequirePackage{multirow}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+%    \end{macrocode}
+%
+% 题注支持宏包。
+%    \begin{macrocode}
+\RequirePackage{caption}
+\RequirePackage[list=off]{bicaption}
+\RequirePackage{subcaption}
+%    \end{macrocode}
+%
+% 参考文献支持宏包。
+%    \begin{macrocode}
+\RequirePackage[backend=biber,style=gb7714-2015]{biblatex}
+%    \end{macrocode}
+%
+% 使用 \pkg{tocloft} 设置目录格式。
+%    \begin{macrocode}
+\RequirePackage[titles]{tocloft}
+%    \end{macrocode}
+%
+% \pkg{enumitem} 更好的列表环境。
+%    \begin{macrocode}
+\RequirePackage[inline]{enumitem}
+%    \end{macrocode}
+%
+% 脚注支持宏包。
+%    \begin{macrocode}
+\RequirePackage[perpage, bottom]{footmisc}
+%    \end{macrocode}
+%
+% \pkg{pdfpages} 便于我们插入扫描版的原创性声明和授权声明 PDF 文档。
+%    \begin{macrocode}
+\RequirePackage{pdfpages}
+\includepdfset{fitpaper=true}
+%    \end{macrocode}
+%
+% \pkg{hyperref} 处理超链接。
+%    \begin{macrocode}
+\RequirePackage{hyperref}
+\hypersetup{
+  linktoc            = all,
+  bookmarksnumbered  = true,
+  bookmarksopen      = true,
+  bookmarksopenlevel = 1,
+  unicode            = true,
+  psdextra           = true,
+  breaklinks         = true,
+  plainpages         = false,
+  hidelinks,
+}
+\pdfstringdefDisableCommands{%
+  \let\\\@empty
+  \let\hspace\@gobble
+}
+%    \end{macrocode}
+%
+% 设置 url 样式，与上下文一致。
+%    \begin{macrocode}
+\urlstyle{same}
+%    \end{macrocode}
+%
+% 使用 \pkg{xurl} 的方法，增加 URL 可断行的位置。
+%    \begin{macrocode}
+\def\UrlBreaks{%
+  \do\/%
+  \do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l%
+     \do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z%
+  \do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L%
+     \do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z%
+  \do0\do1\do2\do3\do4\do5\do6\do7\do8\do9\do=\do/\do.\do:%
+  \do\*\do\-\do\~\do\'\do\"\do\-}
+\Urlmuskip=0mu plus 0.1mu
 %</class>
 %    \end{macrocode}
 %
-% 方便的定义封面的一些替换命令。
+% \subsection{信息录入}
+%
+% 定义命令用于录入信息。
 %    \begin{macrocode}
 %<*class>
-\def\sjtu@def@term#1{%
-\define@key{sjtu}{#1}{\csname #1\endcsname{##1}}
-\expandafter\gdef\csname #1\endcsname##1{%
-  \expandafter\gdef\csname sjtu@#1\endcsname{##1}}
-\csname #1\endcsname{}}
+\newcommand\sjtu@def@term[1]{%
+  \expandafter\gdef\csname #1\endcsname##1{%
+    \expandafter\gdef\csname sjtu@value@#1\endcsname{##1}}
+  \csname #1\endcsname{}
+  \define@key{sjtuvalue}{#1}{\csname #1\endcsname{##1}}}
 %    \end{macrocode}
 %
 % 论文中英文题目。
@@ -189,8 +327,8 @@ version 2005/12/01 or later.
 %
 % 学位中英文。
 %    \begin{macrocode}
-\sjtu@def@term{degreeapplied}{}
-\sjtu@def@term{englishdegreeapplied}{}
+\sjtu@def@term{degreeapplied}
+\sjtu@def@term{englishdegreeapplied}
 %    \end{macrocode}
 %
 % 院系中英文名称。
@@ -215,149 +353,140 @@ version 2005/12/01 or later.
 %    \begin{macrocode}
 \sjtu@def@term{date}
 \sjtu@def@term{englishdate}
-\def\sjtusetup{\kvsetkeys{sjtu}}
+\NewDocumentCommand\sjtuSetInfo{}{\setkeys{sjtuvalue}}
 %</class>
 %    \end{macrocode}
 %
-% 定义一些常量。
+% 定义一些文字常量。
 %    \begin{macrocode}
 %<*class>
-\def\sjtu@empty{}
-\def\sjtu@school@chi{上海交通大学}
-\def\sjtu@school@eng{Shanghai Jiao Tong University}
+\newcommand\sjtu@def@label[2]{%
+  \expandafter\gdef\csname sjtu@label@#1\endcsname{#2}
+  \define@key{sjtulabel}{#1}{%
+    \expandafter\gdef\csname sjtu@label@#1\endcsname{##1}}}
+\sjtu@def@label{schoolChi}{上海交通大学}
+\sjtu@def@label{schoolEng}{Shanghai Jiao Tong University}
 %</class>
 %<*bachelor>
-\def\sjtu@degree@chi{学士}
-\def\sjtu@degree@eng{Bachelor}
-\def\sjtu@author@chi{学生姓名}
-\def\sjtu@studentid@chi{学生学号}
-\def\sjtu@supervisor@chi{指导教师}
-\def\sjtu@coursename@chi{课程名称}
-\def\sjtu@major@chi{专业}
-\def\sjtu@department@chi{学院(系)}
 \ifsjtu@course
-  \def\sjtu@subtitle@chi{课程论文}
-  \def\sjtu@subtitle@eng{}
+  \sjtu@def@label{degreeChi}{}
+  \sjtu@def@label{degreeEng}{}
 \else
-  \def\sjtu@subtitle@chi{\sjtu@degree@chi 学位论文}
-  \def\sjtu@subtitle@eng{Thesis of \sjtu@degree@eng}
+  \sjtu@def@label{degreeChi}{学士}
+  \sjtu@def@label{degreeEng}{Bachelor}
+\fi
+\sjtu@def@label{authorChi}{学生姓名}
+\sjtu@def@label{studentidChi}{学生学号}
+\sjtu@def@label{supervisorChi}{指导教师}
+\sjtu@def@label{coursenameChi}{课程名称}
+\sjtu@def@label{majorChi}{专业}
+\sjtu@def@label{departmentChi}{学院(系)}
+\ifsjtu@course
+  \sjtu@def@label{thesiscat}{课程论文}
+  \def\sjtu@label@thesistype{\sjtu@label@thesiscat}
+  \sjtu@def@label{subjectChi}{\sjtu@label@thesiscat}
+  \sjtu@def@label{subjectEng}{Course Paper}
+\else
+  \sjtu@def@label{thesiscat}{学位论文}
+  \def\sjtu@label@thesistype{毕业设计（论文）}
+  \sjtu@def@label{subjectChi}{\sjtu@label@degreeChi\sjtu@label@thesiscat}
+  \sjtu@def@label{subjectEng}{Thesis of \sjtu@label@degreeEng}
 \fi
 %</bachelor>
 %<*graduate>
 \ifsjtu@doctor
-  \def\sjtu@degree@chi{博士}
-  \def\sjtu@degree@eng{Doctor}
+  \sjtu@def@label{degreeChi}{博士}
+  \sjtu@def@label{degreeEng}{Doctor}
 \else
-  \def\sjtu@degree@chi{硕士}
-  \def\sjtu@degree@eng{Master}
+  \sjtu@def@label{degreeChi}{硕士}
+  \sjtu@def@label{degreeEng}{Master}
 \fi
-\def\sjtu@author@chi{\sjtu@degree@chi 研究生}
-\def\sjtu@author@eng{Candidate}
-\def\sjtu@studentid@chi{学号}
-\def\sjtu@studentid@eng{Student ID}
-\def\sjtu@supervisor@chi{导师}
-\def\sjtu@supervisor@eng{Supervisor}
-\def\sjtu@assisupervisor@chi{副导师}
-\def\sjtu@assisupervisor@eng{Assistant Supervisor}
-\def\sjtu@degreeapplied@chi{申请学位}
-\def\sjtu@degreeapplied@eng{Academic Degree Applied for}
-\def\sjtu@major@chi{学科}
-\def\sjtu@major@eng{Speciality}
-\def\sjtu@department@chi{所在单位}
-\def\sjtu@department@eng{Affiliation}
-\def\sjtu@defenddate@chi{答辩日期}
-\def\sjtu@defenddate@eng{Date of Defence}
-\def\sjtu@conferring@chi{授予学位单位}
-\def\sjtu@conferring@eng{Degree-Conferring-Institution}
-\def\sjtu@subtitle@chi{%
-  \sjtu@school@chi\sjtu@degree@chi 学位论文
+\sjtu@def@label{authorChi}{\sjtu@label@degreeChi 研究生}
+\sjtu@def@label{authorEng}{Candidate}
+\sjtu@def@label{studentidChi}{学号}
+\sjtu@def@label{studentidEng}{Student ID}
+\sjtu@def@label{supervisorChi}{导师}
+\sjtu@def@label{supervisorEng}{Supervisor}
+\sjtu@def@label{assisupervisorChi}{副导师}
+\sjtu@def@label{assisupervisorEng}{Assistant Supervisor}
+\sjtu@def@label{degreeappliedChi}{申请学位}
+\sjtu@def@label{degreeappliedEng}{Academic Degree Applied for}
+\sjtu@def@label{majorChi}{学科}
+\sjtu@def@label{majorEng}{Speciality}
+\sjtu@def@label{departmentChi}{所在单位}
+\sjtu@def@label{departmentEng}{Affiliation}
+\sjtu@def@label{defenddateChi}{答辩日期}
+\sjtu@def@label{defenddateEng}{Date of Defence}
+\sjtu@def@label{conferringChi}{授予学位单位}
+\sjtu@def@label{conferringEng}{Degree-Conferring-Institution}
+\sjtu@def@label{thesiscat}{学位论文}
+\def\sjtu@label@thesistype{\sjtu@label@thesiscat}
+\sjtu@def@label{subjectChi}{%
+  \sjtu@label@schoolChi\sjtu@label@degreeChi\sjtu@label@thesiscat
 }
-\def\sjtu@subtitle@eng{%
-  Dissertation Submitted to \sjtu@school@eng \\%
-  for the Degree of \sjtu@degree@eng
+\sjtu@def@label{subjectEng}{%
+  Dissertation Submitted to \sjtu@label@schoolEng \\%
+  for the Degree of \sjtu@label@degreeEng
 }
 %</graduate>
 %<*class>
-\def\sjtu@original@chi{学位论文原创性声明}
-\def\sjtu@authorization@chi{学位论文版权使用授权书}
-\def\sjtu@originality{%
-  本人郑重声明：所呈交的学位论文《\sjtu@title》，是本人在导师的指导
-  下，独立进行研究工作所取得的成果。除文中已经注明引用的内容外，本论
-  文不包含任何其他个人或集体已经发表或撰写过的作品成果。对本文的研究
-  做出重要贡献的个人和集体，均已在文中以明确方式标明。本人完全意识到
-  本声明的法律结果由本人承担。}
-\def\sjtu@authorization{%
-  本学位论文作者完全了解学校有关保留、使用学位论文的规定，同意学校保
-  留并向国家有关部门或机构送交论文的复印件和电子版，允许论文被查阅和
-  借阅。本人授权上海交通大学可以将本学位论文的全部或部分内容编入有关
-  数据库进行检索，可以采用影印、缩印或扫描等复制手段保存和汇编本学位
-  论文。}
-\def\sjtu@abstract@chi{摘要}
-\def\sjtu@abstract@eng{Abstract}
-\def\sjtu@keywords@chi{关键词：}
-\def\sjtu@keywords@eng{Key words:~}
+\sjtu@def@label{origtitle}{\sjtu@label@thesistype 原创性声明}
+\sjtu@def@label{authtitle}{\sjtu@label@thesistype 版权使用授权书}
+\sjtu@def@label{origbody}{%
+  本人郑重声明：所呈交的\sjtu@label@thesistype 《\sjtu@value@title》，是
+  本人在导师的指导下，独立进行研究工作所取得的成果。除文中已经注明引用的
+  内容外，本论文不包含任何其他个人或集体已经发表或撰写过的作品成果。对本
+  文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。本人完全意
+  识到本声明的法律结果由本人承担。}
+\sjtu@def@label{authbody}{%
+  本\sjtu@label@thesistype 作者完全了解学校有关保留、使用\sjtu@label@thesistype 
+  的规定，同意学校保留并向国家有关部门或机构送交论文的复印件和电子版，允
+  许论文被查阅和借阅。本人授权上海交通大学可以将本\sjtu@label@thesistype
+  的全部或部分内容编入有关数据库进行检索，可以采用影印、缩印或扫描等复制
+  手段保存和汇编本\sjtu@label@thesistype 。}
+\sjtu@def@label{abstractChi}{摘要}
+\sjtu@def@label{abstractEng}{Abstract}
+\sjtu@def@label{keywordsChi}{关键词：}
+\sjtu@def@label{keywordsEng}{Key words:~}
 \ifsjtu@english
-  \def\sjtu@titlepage{Title Page}
-  \let\sjtu@abstract\sjtu@abstract@eng
-  \def\sjtu@figurename{Figure}
-  \def\sjtu@listfigurename{List of Figures}
-  \def\sjtu@tablename{Table}
-  \def\sjtu@listtablename{List of Tables}
-  \def\sjtu@nomenclature{Nomenclature}
-  \def\sjtu@ack{Acknowledgements}
-  \def\sjtu@publications{Publications}
-  \def\sjtu@patents{Patents}
-  \def\sjtu@projects{Projects}
+  \sjtu@def@label{titlepage}{Title Page}
+  \def\sjtu@label@abstract{\sjtu@label@abstractEng}
+  \sjtu@def@label{figurename}{Figure}
+  \sjtu@def@label{listfigurename}{List of Figures}
+  \sjtu@def@label{tablename}{Table}
+  \sjtu@def@label{listtablename}{List of Tables}
+  \sjtu@def@label{nomenclature}{Nomenclature}
+  \sjtu@def@label{acknowledgements}{Acknowledgements}
+  \sjtu@def@label{publications}{Publications}
+  \sjtu@def@label{patents}{Patents}
+  \sjtu@def@label{projects}{Projects}
 \else
-  \def\sjtu@titlepage{扉页}
-  \let\sjtu@abstract\sjtu@abstract@chi
-  \def\sjtu@figurename{图}
-  \def\sjtu@listfigurename{插图索引}
-  \def\sjtu@tablename{表}
-  \def\sjtu@listtablename{表格索引}
-  \def\sjtu@nomenclature{主要符号对照表}
-  \def\sjtu@ack{致谢}
-  \def\sjtu@publications{攻读学位期间发表的学术论文}
-  \def\sjtu@patents{攻读学位期间申请的专利}
-  \def\sjtu@projects{攻读学位期间参与的项目}
+  \sjtu@def@label{titlepage}{扉页}
+  \def\sjtu@label@abstract{\sjtu@label@abstractChi}
+  \sjtu@def@label{figurename}{图}
+  \sjtu@def@label{listfigurename}{插图索引}
+  \sjtu@def@label{tablename}{表}
+  \sjtu@def@label{listtablename}{表格索引}
+  \sjtu@def@label{nomenclature}{主要符号对照表}
+  \sjtu@def@label{acknowledgements}{致谢}
+  \sjtu@def@label{publications}%
+                 {攻读\sjtu@label@degreeChi 学位期间已发表或录用的论文}
+  \sjtu@def@label{patents}%
+                 {攻读\sjtu@label@degreeChi 学位期间申请的专利}
+  \sjtu@def@label{projects}%
+                 {攻读\sjtu@label@degreeChi 学位期间参与的项目}
 \fi
+\NewDocumentCommand\sjtuSetLabel{}{\setkeys{sjtulabel}}
 %</class>
 %    \end{macrocode}
 %
-% patch commands
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{xparse}
-\RequirePackage{etoolbox}
-\patchcmd\cleardoublepage
-  {\newpage}{\thispagestyle{empty}\newpage}
-  {}{}
-\patchcmd\chapter
-  {\thispagestyle{\CTEX@chapter@pagestyle}}{}
-  {}{}
-\patchcmd\@chapter
-  {\if@twocolumn}
-  {\addtocontents{loa}{\protect\addvspace{10\p@}}%
-   \if@twocolumn}
-  {}{}
-\patchcmd\tableofcontents
-  {\chapter}
-  {\cleardoublepage%
-   \pdfbookmark[0]{\contentsname}{toc}%
-   \chapter}
-  {}{}
-%</class>
-%    \end{macrocode}
+% \subsection{页面设置}
 %
-% 页面设置
+% 设置纸张、页边距。
 %    \begin{macrocode}
-%<*class>
-\RequirePackage{geometry}
-%</class>
 %<*(bachelor|graduate)>
 \geometry{%
   paper      = a4paper,
-%</(bachelor|graduate)>
 %<*bachelor>
   vmargin    = 72bp,
   hmargin    = 90bp}
@@ -370,27 +499,18 @@ version 2005/12/01 or later.
 %</graduate>
 %    \end{macrocode}
 %
-% 页眉页脚设置
+% 设置页眉页脚。
 %    \begin{macrocode}
-%<*class>
-\RequirePackage{fancyhdr}
-\RequirePackage{pageslts}
-\AtBeginDocument{%
-  \pagenumbering{Alph}%
-  \pagestyle{empty}%
-}
-%</class>
-%<*(bachelor|graduate)>
 %<*bachelor>
 \ifsjtu@english
-  \def\sjtu@titlemark{\sjtu@englishtitle}
+  \def\sjtu@titlemark{\sjtu@value@englishtitle}
   \newcommand\sjtu@fancyhead{%
     \parbox[b]{0.75\textwidth}{%
       \raggedleft\nouppercase{\footnotesize\kaishu\sjtu@titlemark}}}
   \newcommand\sjtu@fancyfoot[2]{%
     \small --~~Page~~{\bfseries{#1}}~~of~~{\bfseries{#2}}~~--}
 \else
-  \def\sjtu@titlemark{\sjtu@title}
+  \def\sjtu@titlemark{\sjtu@value@title}
   \newcommand\sjtu@fancyhead{%
     \parbox[b]{0.75\textwidth}{%
       \raggedleft\nouppercase{\small\kaishu\sjtu@titlemark}}}
@@ -399,7 +519,7 @@ version 2005/12/01 or later.
 \fi
 \fancypagestyle{sjtu@front}{%
   \fancyhf{}
-  \fancyhead[L]{\includegraphics{figure/sjtubanner}}
+  \fancyhead[L]{\includegraphics{figure/sjtubanner.pdf}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.Roman}}}
 }
@@ -407,201 +527,86 @@ version 2005/12/01 or later.
 \fancypagestyle{sjtu@plain}{%
   \fancyhf{}
 %<*bachelor>
-  \fancyhead[L]{\includegraphics{figure/sjtubanner}}
+  \fancyhead[L]{\includegraphics{figure/sjtubanner.pdf}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\thepage}{\lastpageref{pagesLTS.arabic}}}
 %</bachelor>
 %<*graduate>
-  \fancyhead[C]{\zihao{-5}\sjtu@subtitle@chi}
+  \fancyhead[C]{\zihao{-5}\sjtu@label@subjectChi}
   \fancyfoot[C]{\small ---~{\bfseries\thepage}~---}
 %</graduate>
 }
-%</(bachelor|graduate)>
 %<*bachelor>
 \fancypagestyle{sjtu@biglast}{%
   \fancyhf{}
-  \fancyhead[L]{\includegraphics{figure/sjtubanner}}
+  \fancyhead[L]{\includegraphics{figure/sjtubanner.pdf}}
   \fancyhead[R]{\sjtu@fancyhead}
   \fancyfoot[C]{\sjtu@fancyfoot{\theCurrentPageLocal}%
                                {\lastpageref{pagesLTS.roman.local}}}
 }
 %</bachelor>
+%</(bachelor|graduate)>
+%    \end{macrocode}
+%
+% \begin{macro}{\cleardoublepage}
+% 空白页清空页眉页脚。
+%    \begin{macrocode}
+%<*class>
+\patchcmd\cleardoublepage
+  {\newpage}{\thispagestyle{empty}\newpage}
+  {}{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\chapter}
+% 每章第一页默认会设置特殊的 pagestyle, 我们将其清除。
+%    \begin{macrocode}
+\patchcmd\chapter
+  {\thispagestyle{\CTEX@chapter@pagestyle}}{}
+  {}{}
+%</class>
+%    \end{macrocode}
+% \end{macro}
+%
+% 设置文档开始时初始的页码与页眉页脚风格。
+%    \begin{macrocode}
+%<*(bachelor|graduate)>
+\AtBeginDocument{%
+  \pagenumbering{Alph}
+  \pagestyle{empty}}
 %    \end{macrocode}
 %
 % \begin{macro}{\frontmatter}
 % \begin{macro}{\mainmatter}
-% 前言的页码用大写罗马数字，
+% 前言的页码设置为大写罗马数字，同时设置前言与正文的页眉页脚风格。
 %    \begin{macrocode}
-%<*(bachelor|graduate)>
 \renewcommand\frontmatter{%
   \cleardoublepage
   \@mainmatterfalse
-  \pagenumbering{Roman}%
-%</(bachelor|graduate)>
+  \pagenumbering{Roman}
 %<*bachelor>
-  \pagestyle{sjtu@front}%
+  \pagestyle{sjtu@front}}
 %</bachelor>
 %<*graduate>
-  \pagestyle{sjtu@plain}%
+  \pagestyle{sjtu@plain}}
 %</graduate>
-%<*(bachelor|graduate)>
-}
 \renewcommand\mainmatter{%
   \cleardoublepage
   \@mainmattertrue
-  \pagenumbering{arabic}%
-  \pagestyle{sjtu@plain}%
-}
+  \pagenumbering{arabic}
+  \pagestyle{sjtu@plain}}
 %</(bachelor|graduate)>
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %
-% 目录格式
-% 章节编号深度 (part 对应 -1)
-% 目录深度 (part 对应 -1)
-% 目录章节标题
-%    \begin{macrocode}
-%<*class>
-\RequirePackage[titles]{tocloft}
-\setcounter{secnumdepth}{4}  
-\setcounter{tocdepth}{2}     
-%</class>
-%<*bachelor>
-\renewcommand{\cftchapfont}{\normalfont}
-%</bachelor>
-%<*graduate>
-\renewcommand{\cftchapfont}{\bfseries\heiti}
-%</graduate>
-%    \end{macrocode}
+% \subsection{主文档格式}
 %
-% 插入 pdf 支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{environ}
-%</class>
-%    \end{macrocode}
-%
-% 数学支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{mathtools}
-%</class>
-%    \end{macrocode}
-%
-% 字体支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage[defaultsups]{newtxtext}
-\RequirePackage{newtxmath}
-\RequirePackage[opentype]{sourcecodepro}
-\RequirePackage{anyfontsize}
-%</class>
-%    \end{macrocode}
-%
-% 图形支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{graphicx}
-%</class>
-%    \end{macrocode}
-%
-% 表格支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{array}
-\RequirePackage{multirow}
-\RequirePackage{booktabs}
-\RequirePackage{threeparttable}
-\RequirePackage{longtable}
-\appto\TPTnoteSettings{\footnotesize}
-%</class>
-%    \end{macrocode}
-%
-% 题注支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{caption}
-\RequirePackage[list=off]{bicaption}
-\RequirePackage{subcaption}
-\DeclareCaptionFont{kaishu}{\kaishu}
-\captionsetup{%
-  format        = plain,
-  labelformat   = simple,
-  labelsep      = space,
-  justification = centering,
-  font          = {small,kaishu}}
-\DeclareCaptionOption{bi-first}[]{%
-  \def\tablename{\sjtu@tablename}
-  \def\figurename{\sjtu@figurename}}
-\DeclareCaptionOption{bi-second}[]{%
-  \def\tablename{Table}
-  \def\figurename{Figure}}
-\captionsetup[bi-first]{bi-first}
-\captionsetup[bi-second]{bi-second}
-\captionsetup[sub]{font=footnotesize}
-%</class>
-%    \end{macrocode}
-%
-% 参考文献支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage[backend=biber,style=gb7714-2015]{biblatex}
-%</class>
-%    \end{macrocode}
-%
-% enumitem 宏包 紧凑间距。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage[inline]{enumitem}
-\setlist{nosep}
-\setlist*{leftmargin=*}
-\setlist[1]{labelindent=\parindent}
-%</class>
-%    \end{macrocode}
-%
-% 脚注支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage[perpage, bottom]{footmisc}
-%</class>
-%    \end{macrocode}
-%
-% 插入 pdf 支持宏包。
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{pdfpages}
-\includepdfset{fitpaper=true}
-%</class>
-%    \end{macrocode}
-%
-% 超链接
-%    \begin{macrocode}
-%<*class>
-\RequirePackage{hyperref}
-\hypersetup{
-  linktoc            = all,
-  bookmarksnumbered  = true,
-  bookmarksopen      = true,
-  bookmarksopenlevel = 1,
-  unicode            = true,
-  psdextra           = true,
-  breaklinks         = true,
-  plainpages         = false,
-  hidelinks,
-}
-\pdfstringdefDisableCommands{%
-  \let\\\@empty
-  \let\hspace\@gobble
-}
-%</class>
-%    \end{macrocode}
-%
-% ctex
+% \subsubsection{章节标题}
+% 各级标题格式设置。
 %    \begin{macrocode}
 %<*class>
 \ctexset{%
-  autoindent     = true,
   chapter={%
     format       = \zihao{3}\bfseries\heiti\centering,
     nameformat   = {},
@@ -628,19 +633,110 @@ version 2005/12/01 or later.
   },
   paragraph/afterindent    = true,
   subparagraph/afterindent = true,}
+%    \end{macrocode}
+%
+% \subsubsection{段落}
+%
+% 全文首行缩进 2 字符，标点符号用全角。
+%    \begin{macrocode}
+\ctexset{%
+  punct          = quanjiao,
+  space          = auto,
+  autoindent     = true}
+%    \end{macrocode}
+%
+% 利用 \pkg{enumitem} 命令调整默认列表环境间的距离，以符合中文习惯。
+%    \begin{macrocode}
+\setlist{nosep}
+\setlist*{leftmargin=*}
+\setlist[1]{labelindent=\parindent}
+%    \end{macrocode}
+% 
+% \subsubsection{目录}
+% 
+% 章节编号深度最多 4 层，即: x.x.x.x，对应的命令和层序号分别是：
+% \cs{chapter}(0), \cs{section}(1), \cs{subsection}(2), \cs{subsubsection}(3)。
+%    \begin{macrocode}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+%    \end{macrocode}
+%
+% \begin{macro}{\tableofcontents}
+% 目录生成命令，添加 PDF 标签。
+%    \begin{macrocode}
+\patchcmd\tableofcontents
+{\chapter}
+{\cleardoublepage%
+  \pdfbookmark[0]{\contentsname}{toc}%
+  \chapter}
+{}{}
+%</class>
+%    \end{macrocode}
+% \end{macro}
+%
+% 本科与研究生论文设置不同的目录格式。
+%    \begin{macrocode}
+%<*bachelor>
+\renewcommand{\cftchapfont}{\normalfont}
+%</bachelor>
+%<*graduate>
+\renewcommand{\cftchapfont}{\bfseries\heiti}
+%</graduate>
+%    \end{macrocode}
+%
+% \subsubsection{浮动对象以及表格}
+% 下面这组命令使浮动对象的缺省值稍微宽松一点，从而防止幅度对象占据过多的文本页
+% 面，也可以防止在很大空白的浮动页上放置很小的图形。
+%    \begin{macrocode}
+%<*class>
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.65}
+\renewcommand{\floatpagefraction}{0.60}
+%    \end{macrocode}
+%
+% 定义公式、图、表的编号为“3-1”的形式，即分隔符由“.”变为“-”。
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \renewcommand{\theequation}{\thechapter--\arabic{equation}}
+  \renewcommand{\thefigure}{\thechapter--\arabic{figure}}
+  \renewcommand\p@subfigure{\thefigure}
+  \renewcommand{\thetable}{\thechapter--\arabic{table}}}
+%    \end{macrocode}
+%
+% 设置双语题注。
+%    \begin{macrocode}
+\DeclareCaptionFont{kaishu}{\kaishu}
+\captionsetup{%
+  format        = plain,
+  labelformat   = simple,
+  labelsep      = space,
+  justification = centering,
+  font          = {small,kaishu}}
+\DeclareCaptionOption{bi-first}[]{%
+  \def\tablename{\sjtu@tablename}
+  \def\figurename{\sjtu@figurename}}
+\DeclareCaptionOption{bi-second}[]{%
+  \def\tablename{Table}
+  \def\figurename{Figure}}
+\captionsetup[bi-first]{bi-first}
+\captionsetup[bi-second]{bi-second}
+\captionsetup[sub]{font=footnotesize}
 %</class>
 %    \end{macrocode}
 %
-% 声明。
+% \subsubsection{声明}
+%
+% 支持扫描文件替换。
 %    \begin{macrocode}
 %<*class>
-\newcommand\sjtu@authorization@cont{%
+\newcommand\sjtu@authconf{%
   \par\hspace{8em}
-  {\heiti 保　密} $\Box$，在 \uline{\hspace{2em}}
+  {\heiti 保　密} $\square$，在 \uline{\hspace{3em}}
   年解密后适用本授权书。\par
-  本学位论文属于：
+  本\sjtu@label@thesiscat 属于：
   \par\hspace{8em}
-  {\heiti 不保密} $\Box$。
+  {\heiti 不保密} $\square$。
   \vskip 1ex
   （请在以上方框内打钩）
 }
@@ -656,16 +752,16 @@ version 2005/12/01 or later.
     \IfNoValueTF{#1}{%
       \cleardoublepage
       \thispagestyle{empty}
-      \chapter*{\zihao{-2}\sjtu@school@chi \\%
-                \sjtu@original@chi}
+      \chapter*{\zihao{-2}\sjtu@label@schoolChi \\%
+                \sjtu@label@origtitle}
       {%
         \zihao{4}
-        \sjtu@originality
+        \sjtu@label@origbody
         \vskip16ex
         \noindent
         \begin{minipage}{\textwidth}
           \hfill
-          \sjtu@signbox{学位论文作者}
+          \sjtu@signbox{\sjtu@label@thesiscat 作者}
         \end{minipage}
       }
     }{\includepdf[pagecommand={\thispagestyle{empty}}]{#1}}
@@ -676,17 +772,17 @@ version 2005/12/01 or later.
     \IfNoValueTF{#1}{%
       \cleardoublepage
       \thispagestyle{empty}
-      \chapter*{\zihao{-2}\sjtu@school@chi \\%
-                \sjtu@authorization@chi}
+      \chapter*{\zihao{-2}\sjtu@label@schoolChi \\%
+                \sjtu@label@authtitle}
       {%
         \zihao{4}
-        \sjtu@authorization
+        \sjtu@label@authbody
         \vskip1ex
-        \sjtu@authorization@cont
+        \sjtu@authconf
         \vskip16ex
         \noindent
         \begin{minipage}{\textwidth}
-          \sjtu@signbox{学位论文作者}
+          \sjtu@signbox{\sjtu@label@thesiscat 作者}
           \hfill
           \sjtu@signbox{指导教师}
         \end{minipage}
@@ -695,25 +791,127 @@ version 2005/12/01 or later.
   \fi
 }
 %</class>
+%    \end{macrocode}
+%
+% \subsubsection{摘要}
+%
+% 定义摘要环境，本科与研究生论文的摘要样式要求略有不同。
+%    \begin{macrocode}
+%<*(bachelor|graduate)>
+\NewDocumentEnvironment{abstract}{}%
+{\cleardoublepage
+  \pdfbookmark[0]{\sjtu@label@abstract}{abstract}
+  \chapter*{%
+    \sjtu@value@title \vskip 16bp
+%<*bachelor>
+    {\zihao{4}\sjtu@label@abstractChi}
+%</bachelor>
+%<*graduate>
+    \sjtu@label@abstractChi
+%</graduate>
+  }
+  \markboth{\sjtu@label@abstractChi}{}
+%<*graduate>
+  \zihao{4}
+%</graduate>
+}{%
+  \vspace{3ex}\noindent
+%<*bachelor>
+  {\zihao{-4}\heiti\sjtu@label@keywordsChi}{\zihao{5}\sjtu@value@keywords}
+%</bachelor>
+%<*graduate>
+  {\heiti\sjtu@label@keywordsChi}\sjtu@value@keywords
+%</graduate>
+}
+%    \end{macrocode}
+%
+% 本科论文英文大摘要。
+%    \begin{macrocode}
+\NewDocumentEnvironment{englishabstract}{}{%
+  \cleardoublepage
+  \chapter*{%
+    \MakeUppercase\sjtu@value@englishtitle \vskip 16bp
+%<*bachelor>
+    {\zihao{4}\MakeUppercase\sjtu@label@abstractEng}}
+%</bachelor>
+%<*graduate>
+    \MakeUppercase\sjtu@label@abstractEng}
+%</graduate>
+  \markboth{\sjtu@label@abstractEng}{}
+%<*graduate>
+  \zihao{4}
+%</graduate>
+}{%
+  \vspace{3ex}\noindent
+%<*bachelor>
+  {\zihao{-4}\bfseries\sjtu@label@keywordsEng}
+  {\zihao{5}\sjtu@value@englishkeywords}}
+%</bachelor>
+%<*graduate>
+  {\bfseries\MakeUppercase\sjtu@label@keywordsEng}
+  \sjtu@value@englishkeywords}
+%</graduate>
+\newcommand\sjtu@bigabstract[1]{\long\gdef\sjtu@bigabstract@body{#1}}
+\NewDocumentEnvironment{bigabstract}{}
+{\Collect@Body\sjtu@bigabstract}
+%<*bachelor>
+{\ifsjtu@course\relax\else%
+  \ifsjtu@english\relax\else%
+    \AtEndDocument{%
+      \cleardoublepage
+      \pagenumbering{roman}
+      \pagestyle{sjtu@biglast}
+      \chapter*{\MakeUppercase\sjtu@value@englishtitle}
+      \sjtu@bigabstract@body
+    }
+  \fi
+\fi}
+%</bachelor>
+%<*graduate>
+{}
+%</graduate>
+%</(bachelor|graduate)>
+%    \end{macrocode}
+%
+% \subsubsection{主要符号对照表}
+%
+% 使用 \pkg{longtable} 实现符号对照表。
+%    \begin{macrocode}
 %<*class>
 \NewDocumentEnvironment{nomenclature}{m}
 {\cleardoublepage
-  \chapter{\sjtu@nomenclature}
-  \markboth{\sjtu@nomenclature}{}
+  \chapter{\sjtu@label@nomenclature}
+  \markboth{\sjtu@label@nomenclature}{}
   \begin{longtable}{#1}}
 {\end{longtable}}
-\newcommand\sjtu@acknowledge[1]{\long\gdef\sjtu@acknowledge@body{#1}}
+%</class>
+%    \end{macrocode}
+%
+% \subsubsection{致谢}
+%
+% 定义致谢环境，盲审模式下隐藏致谢。
+%    \begin{macrocode}
+%<*class>
+\newcommand\sjtu@acknowledgements[1]{\long\gdef\sjtu@acknowledgements@body{#1}}
 \NewDocumentEnvironment{acknowledgements}{}
-{\Collect@Body\sjtu@acknowledge}
+{\Collect@Body\sjtu@acknowledgements}
 {
   \ifsjtu@review\relax\else%
     \cleardoublepage
-    \chapter*{\sjtu@ack}
-    \markboth{\sjtu@ack}{}
-    \addcontentsline{toc}{chapter}{\sjtu@ack}
-    \sjtu@acknowledge@body
+    \chapter*{\sjtu@label@acknowledgements}
+    \markboth{\sjtu@label@acknowledgements}{}
+    \addcontentsline{toc}{chapter}{\sjtu@label@acknowledgements}
+    \sjtu@acknowledgements@body
   \fi
 }
+%</class>
+%    \end{macrocode}
+%
+% \subsubsection{附录}
+%
+% 定义附录使用的列表环境，使用和参考文献列表相同的样式。
+%    \begin{macrocode}
+%<*class>
 \NewDocumentEnvironment{sjtu@bibliolist}{o}{%
   \list
   {\@biblabel{\@arabic\c@enumiv}}%
@@ -731,106 +929,41 @@ version 2005/12/01 or later.
 {\def\@noitemerr
   {\@latex@warning{Empty `bibliolist' environment}}%
   \endlist}
+%</class>
+%    \end{macrocode}
+%
+% 分别定义论文、专利和项目三个附录环境。
+%    \begin{macrocode}
+%<*class>
 \NewDocumentEnvironment{publications}{O{99}}
 {\cleardoublepage
-  \chapter{\sjtu@publications}
-  \markboth{\sjtu@publications}{}
+  \chapter{\sjtu@label@publications}
+  \markboth{\sjtu@label@publications}{}
   \begin{sjtu@bibliolist}[#1]}
 {\end{sjtu@bibliolist}}
 \NewDocumentEnvironment{patents}{O{99}}
 {\cleardoublepage
-  \chapter{\sjtu@patents}
-  \markboth{\sjtu@patents}{}
+  \chapter{\sjtu@label@patents}
+  \markboth{\sjtu@label@patents}{}
   \begin{sjtu@bibliolist}[#1]}
 {\end{sjtu@bibliolist}}
 \NewDocumentEnvironment{projects}{O{99}}
 {\cleardoublepage
-  \chapter{\sjtu@projects}
-  \markboth{\sjtu@projects}{}
+  \chapter{\sjtu@label@projects}
+  \markboth{\sjtu@label@projects}{}
   \begin{sjtu@bibliolist}[#1]}
 {\end{sjtu@bibliolist}}
 %</class>
-%<*(bachelor|graduate)>
-\NewDocumentEnvironment{abstract}{}%
-{\cleardoublepage
-  \pdfbookmark[0]{\sjtu@abstract}{abstract}
-  \chapter*{%
-    \sjtu@title \vskip 16bp
-%<*bachelor>
-    {\zihao{4}\sjtu@abstract@chi}
-%</bachelor>
-%<*graduate>
-    \sjtu@abstract@chi
-%</graduate>
-  }
-  \markboth{\sjtu@abstract@chi}{}
-%<*graduate>
-  \zihao{4}
-%</graduate>
-}{%
-  \vspace{3ex}\noindent
-%<*bachelor>
-  {\zihao{-4}\heiti\sjtu@keywords@chi}{\zihao{5}\sjtu@keywords}
-%</bachelor>
-%<*graduate>
-  {\heiti\sjtu@keywords@chi}\sjtu@keywords
-%</graduate>
-}
-\NewDocumentEnvironment{englishabstract}{}{%
-  \cleardoublepage
-  \chapter*{%
-    \MakeUppercase\sjtu@englishtitle \vskip 16bp
-%<*bachelor>
-    {\zihao{4}\MakeUppercase\sjtu@abstract@eng}
-%</bachelor>
-%<*graduate>
-    \MakeUppercase\sjtu@abstract@eng
-%</graduate>
-  }
-  \markboth{\sjtu@abstract@eng}{}
-%<*graduate>
-  \zihao{4}
-%</graduate>
-}{%
-  \vspace{3ex}\noindent
-%<*bachelor>
-  {\zihao{-4}\bfseries\sjtu@keywords@eng}{\zihao{5}\sjtu@englishkeywords}
-%</bachelor>
-%<*graduate>
-  {\bfseries\MakeUppercase\sjtu@keywords@eng}\sjtu@englishkeywords
-%</graduate>
-}
-\newcommand\sjtu@bigabstract[1]{\long\gdef\sjtu@bigabstract@body{#1}}
-\NewDocumentEnvironment{bigabstract}{}
-{\Collect@Body\sjtu@bigabstract}
-%<*bachelor>
-{
-  \ifsjtu@course\relax\else%
-    \ifsjtu@english\relax\else%
-      \AtEndDocument{%
-        \cleardoublepage
-        \pagenumbering{roman}
-        \pagestyle{sjtu@biglast}
-        \chapter*{\MakeUppercase\sjtu@englishtitle}
-        \sjtu@bigabstract@body
-      }
-    \fi
-  \fi
-}
-%</bachelor>
-%<*graduate>
-{}
-%</graduate>
-%</(bachelor|graduate)>
 %    \end{macrocode}
 %
-%
-% 绘制封面
+% \subsubsection{封面}
+% 
+% 盲审模式下作者、导师姓名等信息。同时将论文信息写入 PDF 元数据。
 %    \begin{macrocode}
 %<*class>
 \AtBeginDocument{
   \ifsjtu@review
-    \sjtusetup{
+    \sjtuSetInfo{
       author={},
       supervisor={},
       assisupervisor={},
@@ -840,20 +973,18 @@ version 2005/12/01 or later.
       studentid={}
     }
   \fi
-  \ifsjtu@english
-    \hypersetup{
-      pdftitle    = \sjtu@englishtitle,
-      pdfauthor   = \sjtu@englishauthor,
-      pdfkeywords = \sjtu@englishkeywords,
-    }%
-  \else
-    \hypersetup{
-      pdftitle    = \sjtu@title,
-      pdfauthor   = \sjtu@author,
-      pdfkeywords = \sjtu@keywords,
-    }%
-  \fi
+  \hypersetup{
+    pdftitle    = \sjtu@value@englishtitle,
+    pdfauthor   = \sjtu@value@englishauthor,
+    pdfsubject  = \sjtu@label@subjectEng,
+    pdfkeywords = \sjtu@value@englishkeywords,
+    pdfcreator  = {LaTeX with SJTUThesis \version}
+  }%
 }
+%    \end{macrocode}
+% 
+% 定义一个特殊的下划线命令供绘制本科论文封面时使用。
+%    \begin{macrocode}
 \newcommand{\sjtu@uline}[1]%
 {\begingroup
   \setbox0=\vbox{\strut #1\strut}%
@@ -868,6 +999,10 @@ version 2005/12/01 or later.
   \repeat
 \endgroup}
 %</class>
+%    \end{macrocode}
+%
+% 绘制封面
+%    \begin{macrocode}
 %<*(bachelor|graduate)>
 \RenewDocumentCommand\maketitle{}{%
   \sjtu@makechinesetitle%
@@ -882,13 +1017,13 @@ version 2005/12/01 or later.
 %<*bachelor>
     \kaishu
     \vspace*{56bp}
-    \includegraphics{sjtulogo}
+    \includegraphics{figure/sjtulogo.pdf}
     \vskip 32bp
-    {\fontsize{32}{32}\sjtu@subtitle@chi}
+    {\fontsize{32}{32}\sjtu@label@subjectChi}
     \vskip 16bp
-    {\zihao{-2}\MakeUppercase\sjtu@subtitle@eng}
+    {\zihao{-2}\MakeUppercase\sjtu@label@subjectEng}
     \vskip 16bp
-    \includegraphics{sjtubadge}
+    \includegraphics{figure/sjtubadge.pdf}
     \vskip \stretch{2}
     {\zihao{2}
       \begin{tabular}{r@{：}l}
@@ -896,7 +1031,7 @@ version 2005/12/01 or later.
         \begin{minipage}[t]{300pt}
           \zihao{-2}
           \begin{center}
-            \sjtu@uline\sjtu@title
+            \sjtu@uline\sjtu@value@title
           \end{center}
         \end{minipage}
       \end{tabular}}
@@ -905,40 +1040,42 @@ version 2005/12/01 or later.
       \def\arraystretch{1.1}
       \begin{tabular}
         {>{\begin{CJKfilltwosides}{4\ccwd}}r<{\end{CJKfilltwosides}}@{：}c}
-        \sjtu@author@chi       & \sjtu@author      \\ \cline{2-2}
-        \sjtu@studentid@chi    & \makebox[180pt]{\sjtu@studentid}  \\ \cline{2-2}
+        \sjtu@label@authorChi        & \sjtu@value@author      \\ \cline{2-2}
+        \sjtu@label@studentidChi     & \makebox[180pt]{\sjtu@value@studentid} \\ 
+          \cline{2-2}
         \ifsjtu@course
-          \sjtu@coursename@chi & \sjtu@coursename  \\ \cline{2-2}
+          \sjtu@label@coursenameChi  & \sjtu@value@coursename  \\ \cline{2-2}
         \else
-          \sjtu@major@chi      & \sjtu@major       \\ \cline{2-2}
+          \sjtu@label@majorChi       & \sjtu@value@major       \\ \cline{2-2}
         \fi
-        \sjtu@supervisor@chi   & \sjtu@supervisor  \\ \cline{2-2}
-        \sjtu@department@chi   & \sjtu@department  \\ \cline{2-2}
+        \sjtu@label@supervisorChi    & \sjtu@value@supervisor  \\ \cline{2-2}
+        \sjtu@label@departmentChi    & \sjtu@value@department  \\ \cline{2-2}
       \end{tabular}}
     \vskip 32bp
 %</bachelor>
 %<*graduate>
     \vspace*{36bp}
-    {\zihao{-2}\sjtu@subtitle@chi}
+    {\zihao{-2}\sjtu@label@subjectChi}
     \vskip \stretch{4}
-    {\zihao{2}\heiti\sjtu@title \vskip 1bp}
+    {\zihao{2}\heiti\sjtu@value@title \vskip 1bp}
     \vskip \stretch{4}
     {\zihao{4}
       \def\tabcolsep{1bp}
       \def\arraystretch{1.25}
       \begin{tabular}
-        {>{\begin{CJKfilltwosides}[t]{6\ccwd}\heiti}r<{\end{CJKfilltwosides}}@{：}l}
-        \sjtu@author@chi           & \sjtu@author          \\
-        \sjtu@studentid@chi        & \sjtu@studentid       \\
-        \sjtu@supervisor@chi       & \sjtu@supervisor      \\
-        \ifx\sjtu@englishassisupervisor\sjtu@empty\else
-          \sjtu@assisupervisor@chi & \sjtu@assisupervisor  \\
+        {>{\begin{CJKfilltwosides}[t]{6\ccwd}\heiti}r<{\end{CJKfilltwosides}}
+          @{：}l}
+        \sjtu@label@authorChi           & \sjtu@value@author         \\
+        \sjtu@label@studentidChi        & \sjtu@value@studentid      \\
+        \sjtu@label@supervisorChi       & \sjtu@value@supervisor     \\
+        \ifx\sjtu@value@assisupervisor\@empty\else
+          \sjtu@label@assisupervisorChi & \sjtu@value@assisupervisor \\
         \fi
-        \sjtu@degreeapplied@chi    & \sjtu@degreeapplied   \\
-        \sjtu@major@chi            & \sjtu@major           \\
-        \sjtu@department@chi       & \sjtu@department      \\
-        \sjtu@defenddate@chi       & \sjtu@date            \\
-        \sjtu@conferring@chi       & \sjtu@school@chi      \\
+        \sjtu@label@degreeappliedChi    & \sjtu@value@degreeapplied  \\
+        \sjtu@label@majorChi            & \sjtu@value@major          \\
+        \sjtu@label@departmentChi       & \sjtu@value@department     \\
+        \sjtu@label@defenddateChi       & \sjtu@value@date           \\
+        \sjtu@label@conferringChi       & \sjtu@label@schoolChi      \\
       \end{tabular}}
     \vskip \stretch{1}
 %</graduate>
@@ -952,32 +1089,45 @@ version 2005/12/01 or later.
   \thispagestyle{empty}
   \begin{center}
     \vspace*{36bp}
-    {\zihao{-2}\sjtu@subtitle@eng}
+    {\zihao{-2}\sjtu@label@subjectEng}
     \vskip \stretch{4}
-    {\zihao{2}\bfseries\MakeUppercase\sjtu@englishtitle \vskip 1bp}
+    {\zihao{2}\bfseries\MakeUppercase\sjtu@value@englishtitle \vskip 1bp}
     \vskip \stretch{4}
     {\zihao{4}
       \def\tabcolsep{1bp}
       \def\arraystretch{1.3}
       \begin{tabular}
         {>{\bfseries}l<{:~}l}
-        \sjtu@author@eng           & \sjtu@englishauthor         \\
-        \sjtu@studentid@eng        & \sjtu@studentid             \\
-        \sjtu@supervisor@eng       & \sjtu@englishsupervisor     \\
-        \ifx\sjtu@englishassisupervisor\sjtu@empty\else
-          \sjtu@assisupervisor@eng & \sjtu@englishassisupervisor \\
+        \sjtu@label@authorEng           & \sjtu@value@englishauthor         \\
+        \sjtu@label@studentidEng        & \sjtu@value@studentid             \\
+        \sjtu@label@supervisorEng       & \sjtu@value@englishsupervisor     \\
+        \ifx\sjtu@value@englishassisupervisor\@empty\else
+          \sjtu@label@assisupervisorEng & \sjtu@value@englishassisupervisor \\
         \fi
-        \sjtu@degreeapplied@eng    & \sjtu@englishdegreeapplied  \\
-        \sjtu@major@eng            & \sjtu@englishmajor          \\
-        \sjtu@department@eng       & \sjtu@englishdepartment     \\
-        \sjtu@defenddate@eng       & \sjtu@englishdate           \\
-        \sjtu@conferring@eng       & \sjtu@school@eng            \\
+        \sjtu@label@degreeappliedEng    & \sjtu@value@englishdegreeapplied  \\
+        \sjtu@label@majorEng            & \sjtu@value@englishmajor          \\
+        \sjtu@label@departmentEng       & \sjtu@value@englishdepartment     \\
+        \sjtu@label@defenddateEng       & \sjtu@value@englishdate           \\
+        \sjtu@label@conferringEng       & \sjtu@label@schoolEng             \\
       \end{tabular}}
     \vskip \stretch{1}
   \end{center}
   \cleardoublepage
 }
 %</graduate>
+%    \end{macrocode}
+%
+% 根据选项载入配置文件。
+%    \begin{macrocode}
+%<*class>
+\ifsjtu@bachelor
+  \AtEndOfClass{\input{sjtuthesis-bachelor.ltx}}
+\else
+  \ifsjtu@master
+    \AtEndOfClass{\input{sjtuthesis-graduate.ltx}}
+  \fi
+\fi
+%</class>
 %    \end{macrocode}
 %
 % \Finale
