@@ -94,6 +94,9 @@
   \@mainmattertrue
   \pagenumbering{arabic}
   \pagestyle{sjtu@plain}}
+\ctexset{%
+  subsection/format = \zihao{-4}\normalfont,
+}
 \renewcommand{\cftchapfont}{\normalfont}
 \NewDocumentEnvironment{abstract}{}%
 {\cleardoublepage
@@ -127,11 +130,11 @@
       \pagenumbering{roman}
       \pagestyle{sjtu@biglast}
       \chapter*{\MakeUppercase\sjtu@value@englishtitle}
-      \sjtu@bigabstract@body
-    }
+      \sjtu@bigabstract@body}
   \fi
 \fi}
 \RenewDocumentCommand\maketitle{}{%
+  \pdfbookmark[0]{\sjtu@label@titlepage}{titlepage}
   \sjtu@makechinesetitle%
 }
 \newcommand\sjtu@makechinesetitle{
@@ -176,8 +179,7 @@
       \end{tabular}}
     \vskip 32bp
   \end{center}
-  \cleardoublepage
-}
+  \cleardoublepage}
 \endinput
 %%
 %% End of file `sjtuthesis-bachelor.ltx'.

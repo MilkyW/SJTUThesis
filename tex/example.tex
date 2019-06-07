@@ -126,7 +126,7 @@ algo(算法)，thm(定理)，lem(引理)，prop(命题)，cor(推论)，defn(定
 bthm(断言定理)，blem(断言引理)，bprop(断言命题)，bcor(断言推论)。
 amsmath还提供了一个proof(证明)的环境。
 这里举一个“定理”和“证明”的例子。
-\begin{thm}[留数定理]
+\begin{theorem}[留数定理]
 \label{thm:res}
   假设$U$是复平面上的一个单连通开子集，$a_1,\ldots,a_n$是复平面上有限个点，$f$是定义在$U\backslash \{a_1,\ldots,a_n\}$上的全纯函数，
   如果$\gamma$是一条把$a_1,\ldots,a_n$包围起来的可求长曲线，但不经过任何一个$a_k$，并且其起点与终点重合，那么：
@@ -158,7 +158,7 @@ amsmath还提供了一个proof(证明)的环境。
 
     所以……
   \end{proof}
-\end{thm}
+\end{theorem}
 
 上面的公式例子中，有一些细节希望大家注意。微分号d应该使用“直立体”也就是用mathrm包围起来。
 并且，微分号和被积函数之间应该有一段小间隔，可以插入\verb+\,+得到。

@@ -107,6 +107,7 @@
 {\Collect@Body\sjtu@bigabstract}
 {}
 \RenewDocumentCommand\maketitle{}{%
+  \pdfbookmark[0]{\sjtu@label@titlepage}{titlepage}
   \sjtu@makechinesetitle%
   \sjtu@makeenglishtitle%
 }
@@ -139,14 +140,13 @@
       \end{tabular}}
     \vskip \stretch{1}
   \end{center}
-  \cleardoublepage
-}
+  \cleardoublepage}
 \newcommand\sjtu@makeenglishtitle{%
   \cleardoublepage
   \thispagestyle{empty}
   \begin{center}
-    \vspace*{36bp}
-    {\zihao{-2}\sjtu@label@subjectEng}
+    \vspace*{32bp}
+    {\zihao{-2}\sjtu@label@subjectEng \vskip 1bp}
     \vskip \stretch{4}
     {\zihao{2}\bfseries\MakeUppercase\sjtu@value@englishtitle \vskip 1bp}
     \vskip \stretch{4}
@@ -169,8 +169,7 @@
       \end{tabular}}
     \vskip \stretch{1}
   \end{center}
-  \cleardoublepage
-}
+  \cleardoublepage}
 \endinput
 %%
 %% End of file `sjtuthesis-graduate.ltx'.
